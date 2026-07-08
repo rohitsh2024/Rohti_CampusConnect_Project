@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Campus Connect — Auth Page (index.html)
+    Split-screen: brand panel on left, form on right.
+    TODO: Connect with backend auth API later (js/auth.js)
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Campus Connect — Sign in or create an account." />
+  <title>Campus Connect | Login &amp; Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/index.css" />
+</head>
+<body class="auth-page">
+
+  <!-- LEFT — Branding panel (hidden on mobile) -->
+  <aside class="auth-brand" aria-hidden="true">
+    <div class="auth-brand__logo">Campus<span>Connect</span></div>
+
+    <h2 class="auth-brand__heading">
+      Your campus.<br />One platform.
+    </h2>
+    <p class="auth-brand__sub">
+      Everything students and administrators need — notices, assignments, jobs,
+      and more — all in one clean, modern dashboard.
+    </p>4
+
+    <ul class="auth-brand__features">
+      <li class="auth-brand__feature">
+        <span class="auth-brand__feature-icon">📋</span>
+        Real-time notice board &amp; announcements
+      </li>
+      <li class="auth-brand__feature">
+        <span class="auth-brand__feature-icon">📁</span>
+        Assignment tracking with deadline alerts
+      </li>
+      <li class="auth-brand__feature">
+        <span class="auth-brand__feature-icon">💼</span>
+        Campus job &amp; internship opportunities
+      </li>
+      <li class="auth-brand__feature">
+        <span class="auth-brand__feature-icon">⚙️</span>
+        Full admin control panel for staff
+      </li>
+    </ul>
+  </aside>
+
+  <!-- RIGHT — Form panel -->
+  <main class="auth-form-panel" role="main">
+    <div class="auth-card">
+
+      <header class="auth-card__header">
+        <!-- Show brand on mobile since left panel is hidden -->
+        <div class="brand" style="margin-bottom:1.5rem; display:none" id="mobile-brand">
+          <div class="brand__logo-icon">CC</div>
+          <span class="brand__name">Campus<strong>Connect</strong></span>
+        </div>
+        <h1 class="auth-card__title" id="auth-heading">Welcome back</h1>
+        <p class="auth-card__subtitle" id="auth-subheading">Sign in to access your campus dashboard.</p>
+      </header>
+
+      <!-- Tab switcher: Sign In / Create Account -->
+      <nav class="auth-tabs" role="tablist" aria-label="Authentication mode">
+        <button
+          class="auth-tabs__btn auth-tabs__btn--active"
+          role="tab" id="tab-signin"
+          aria-selected="true"
+          aria-controls="panel-signin"
+          data-tab="signin"
+        >Sign In</button>
+        <button
+          class="auth-tabs__btn"
+          role="tab" id="tab-register"
+          aria-selected="false"
+          aria-controls="panel-register"
+          data-tab="register"
+        >Create Account</button>
+      </nav>
+
+      <!-- ── SIGN IN PANEL ──────────────────────────────── -->
+      <section class="auth-panel auth-panel--active" id="panel-signin"
+               role="tabpanel" aria-labelledby="tab-signin">
+        <form class="auth-form" id="signin-form" method="post" action="#" novalidate>
+
+          <div class="form-group">
+            <label class="form-label" for="signin-role">I am a</label>
+            <select class="form-select" id="signin-role" name="role" required>
+              <option value="" disabled selected>Select your role…</option>
+              <option value="student">🎓  Student</option>
+              <option value="admin">⚙️  Admin</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signin-email">Email address</label>
+            <input class="form-input" type="email" id="signin-email" name="email"
+                   placeholder="you@campus.edu" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signin-password">Password</label>
+            <div class="input-wrapper">
+              <input class="form-input" type="password" id="signin-password" name="password"
+                     placeholder="Enter your password" required autocomplete="current-password" />
+              <button type="button" class="btn-toggle-pwd" aria-label="Toggle password"
+                      data-target="signin-password">👁</button>
+            </div>
+          </div>
+
+          <a class="forgot-link" href="#">Forgot your password?</a>
+
+          <button class="btn btn--primary btn--full" type="submit">Sign In →</button>
+
+        </form>
+      </section>
+
+      <!-- ── CREATE ACCOUNT PANEL ──────────────────────── -->
+      <section class="auth-panel" id="panel-register"
+               role="tabpanel" aria-labelledby="tab-register" hidden>
+        <form class="auth-form" id="register-form" method="post" action="#" novalidate>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-firstname">First name</label>
+              <input class="form-input" type="text" id="reg-firstname" name="firstName"
+                     placeholder="First name" required autocomplete="given-name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-lastname">Last name</label>
+              <input class="form-input" type="text" id="reg-lastname" name="lastName"
+                     placeholder="Last name" required autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-role">Registering as</label>
+            <select class="form-select" id="reg-role" name="role" required>
+              <option value="" disabled selected>Select your role…</option>
+              <option value="student">🎓  Student</option>
+              <option value="admin">⚙️  Admin</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email address</label>
+            <input class="form-input" type="email" id="reg-email" name="email"
+                   placeholder="you@campus.edu" required autocomplete="email" />
+            <span class="field-hint">Use your official campus email.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password</label>
+            <div class="input-wrapper">
+              <input class="form-input" type="password" id="reg-password" name="password"
+                     placeholder="Min. 8 characters" required minlength="8"
+                     autocomplete="new-password" />
+              <button type="button" class="btn-toggle-pwd" aria-label="Toggle password"
+                      data-target="reg-password">👁</button>
+            </div>
+            <!-- Strength bar — filled by auth.js -->
+            <div class="strength-bar" id="strength-bar"></div>
+            <span class="strength-label" id="strength-label" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-confirm">Confirm password</label>
+            <div class="input-wrapper">
+              <input class="form-input" type="password" id="reg-confirm" name="confirmPassword"
+                     placeholder="Repeat your password" required autocomplete="new-password" />
+              <button type="button" class="btn-toggle-pwd" aria-label="Toggle password"
+                      data-target="reg-confirm">👁</button>
+            </div>
+          </div>
+
+          <div class="form-group form-group--check">
+            <input class="form-checkbox" type="checkbox" id="reg-terms" name="terms" required />
+            <label class="form-label form-label--inline" for="reg-terms">
+              I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+
+          <button class="btn btn--primary btn--full" type="submit">Create Account →</button>
+
+        </form>
+      </section>
+
+      <p class="auth-footer">
+        By continuing, you agree to Campus Connect's
+        <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.
+      </p>
+
+    </div>
+    <!-- /auth-card -->
+  </main>
+
+  <!-- Toast lives outside the card so it's always on top -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- TODO: Wire up real auth endpoints in auth.js -->
+  <script src="js/auth.js"></script>
+</body>
+</html>
