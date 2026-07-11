@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Student Dashboard (student.html)-->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Campus Connect — Student Dashboard." />
+  <title>Campus Connect | Student Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/student.css" />
+</head>
+<body class="dashboard-body">
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!--  STICKY TOPBAR -->
+  <header class="site-header" role="banner">
+    <div class="container topbar__inner">
+
+      <a href="index.html" class="brand" aria-label="Campus Connect home">
+        <div class="brand__logo-icon">CC</div>
+        <span class="brand__name">Campus<strong>Connect</strong></span>
+      </a>
+
+     
+      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false">☰</button>
+
+      <nav class="topbar__nav" id="topbar-nav" role="navigation" aria-label="Student navigation">
+        <ul class="nav-list">
+          <li><a class="nav-link nav-link--active" href="#notices">📋 Notices</a></li>
+          <li><a class="nav-link" href="#assignments">📁 Assignments</a></li>
+          <li><a class="nav-link" href="#jobs">💼 Jobs</a></li>
+          <li><a class="nav-link" href="#profile">👤 Profile</a></li>
+        </ul>
+      </nav>
+
+      <div class="topbar__actions">
+        <!-- Notification bell -->
+        <button class="notif-btn" id="btn-notifications" aria-label="Notifications">
+          🔔
+          <span class="notif-badge" id="notif-count" hidden>0</span>
+        </button>
+
+        <!-- User dropdown -->
+        <details class="user-menu" id="user-menu">
+          <summary class="user-menu__trigger">
+            <span class="avatar" id="student-avatar">S</span>
+            <span class="user-menu__name" id="student-name">Student</span>
+          </summary>
+          <ul class="user-menu__dropdown">
+            <li><a href="#profile">My Profile</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="index.html">Sign Out</a></li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+  </header>
+
+  <!--   MAIN CONTEt-->
+  <main id="main-content" class="dashboard-main" role="main">
+    <div class="container">
+
+      <!-- Page heading row -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">Student Dashboard</h1>
+          <p class="page-header__subtitle">Good to see you. Here's what's happening on campus.</p>
+        </div>
+        <!-- Quick date display —  -->
+        <span style="font-size:.82rem;color:var(--text-light);white-space:nowrap" id="current-date"></span>
+      </div>
+
+      <!-- Summary stats  -->
+      <div class="stats-bar" role="region" aria-label="Summary">
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-notices">—</span>
+          <span class="stat-card__label">Active Notices</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-pending">—</span>
+          <span class="stat-card__label">Pending Assignments</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-jobs">—</span>
+          <span class="stat-card__label">Open Job Listings</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-submitted">—</span>
+          <span class="stat-card__label">Submitted</span>
+        </div>
+      </div>
+
+      <!-- Main 2-column grid -->
+      <div class="dashboard-grid">
+
+        <!-- NOTICE BOARD -->
+        <section class="dashboard-section" id="notices" aria-labelledby="h-notices">
+          <header class="section-header">
+            <h2 class="section-header__title" id="h-notices">
+              <span class="section-icon">📋</span>
+              Notice Board
+            </h2>
+            <span class="section-header__count" id="notices-count" aria-live="polite">Loading…</span>
+          </header>
+
+          <!--
+            Notices injected here by student.js  -->
+          <ul class="notice-list" id="notice-list" aria-label="Campus notices"></ul>
+          <p class="empty-state" id="notices-empty" hidden>No notices right now. Check back later.</p>
+        </section>
+
+        <!-- ── ASSIGNMENTS ──────────────────────────────────── -->
+        <section class="dashboard-section" id="assignments" aria-labelledby="h-assignments">
+          <header class="section-header">
+            <h2 class="section-header__title" id="h-assignments">
+              <span class="section-icon">📁</span>
+              Assignments
+            </h2>
+            <span class="section-header__count" id="assignments-count" aria-live="polite">Loading…</span>
+          </header>
+
+          <!-- Filter bar — -->
+          <div class="filter-bar" role="group" aria-label="Filter by status">
+            <button class="filter-btn filter-btn--active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="submitted">Submitted</button>
+            <button class="filter-btn" data-filter="graded">Graded</button>
+          </div>
+
+          <!--
+            Assignment cards injected by student -->
+          <ul class="assignment-list" id="assignment-list" aria-label="Your assignments"></ul>
+          <p class="empty-state" id="assignments-empty" hidden>No assignments posted yet.</p>
+        </section>
+
+        <!-- ── JOB OPPORTUNITIES ─────────────────────────────── -->
+        <section class="dashboard-section" id="jobs" aria-labelledby="h-jobs">
+          <header class="section-header">
+            <h2 class="section-header__title" id="h-jobs">
+              <span class="section-icon">💼</span>
+              Job Opportunities
+            </h2>
+            <span class="section-header__count" id="jobs-count" aria-live="polite">Loading…</span>
+          </header>
+
+          <!-- Search —  -->
+          <div class="search-bar">
+            <label class="sr-only" for="job-search">Search jobs</label>
+            <input class="form-input search-bar__input" type="search" id="job-search"
+                   placeholder="Search by role, company, skill…" />
+          </div>
+
+          <!--
+            Job cards   -->
+          <ul class="job-list" id="job-list" aria-label="Job opportunities"></ul>
+          <p class="empty-state" id="jobs-empty" hidden>No listings available right now.</p>
+        </section>
+
+        <!-- ── STUDENT PROFILE ────────────────────────────────── -->
+       
+        <section class="dashboard-section dashboard-section--profile" id="profile" aria-labelledby="h-profile">
+          <header class="section-header">
+            <h2 class="section-header__title" id="h-profile">
+              <span class="section-icon">👤</span>
+              Student Profile
+            </h2>
+            <button class="btn btn--sm btn--outline" id="btn-edit-profile"
+                    aria-expanded="false" aria-controls="profile-edit-form">
+              Edit Profile
+            </button>
+          </header>
+
+          <!-- Read-only profile display —  -->
+          <div class="profile-card" id="profile-card">
+            <div class="profile-card__avatar-wrap">
+              <span class="profile-card__avatar" id="profile-avatar">S</span>
+            </div>
+            <dl class="profile-card__details">
+              <div class="profile-card__row">
+                <dt class="profile-card__label">Full Name</dt>
+                <dd class="profile-card__value" id="profile-name">—</dd>
+              </div>
+              <div class="profile-card__row">
+                <dt class="profile-card__label">Email</dt>
+                <dd class="profile-card__value" id="profile-email">—</dd>
+              </div>
+              <div class="profile-card__row">
+                <dt class="profile-card__label">Roll Number</dt>
+                <dd class="profile-card__value" id="profile-roll">—</dd>
+              </div>
+              <div class="profile-card__row">
+                <dt class="profile-card__label">Department</dt>
+                <dd class="profile-card__value" id="profile-dept">—</dd>
+              </div>
+              <div class="profile-card__row">
+                <dt class="profile-card__label">Year</dt>
+                <dd class="profile-card__value" id="profile-year">—</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Edit form —  -->
+          <form class="profile-edit-form" id="profile-edit-form"
+                method="post" action="#" hidden novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="edit-firstname">First name</label>
+                <input class="form-input" type="text" id="edit-firstname" name="firstName"
+                       required autocomplete="given-name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="edit-lastname">Last name</label>
+                <input class="form-input" type="text" id="edit-lastname" name="lastName"
+                       required autocomplete="family-name" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="edit-dept">Department</label>
+                <input class="form-input" type="text" id="edit-dept" name="department" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="edit-year">Year</label>
+                <select class="form-select" id="edit-year" name="year">
+                  <option value="">Select year…</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn--primary" type="submit">Save Changes</button>
+              <button class="btn btn--ghost" type="button" id="btn-cancel-edit">Cancel</button>
+            </div>
+          </form>
+
+        </section>
+
+      </div>
+      <!-- /dashboard-grid -->
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p class="site-footer__copy">&copy; 2026 Campus Connect — All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- TODO: Replace stub data with real API calls -->
+  <script src="js/student.js"></script>
+</body>
+</html>
