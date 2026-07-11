@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Campus Connect — Admin Control Panel (admin.html)
+    Full CRUD for: Students, Assignments, Jobs, Notices
+    TODO: Hook all forms up to the REST API in admin.js
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Campus Connect — Admin Control Panel." />
+  <title>Campus Connect | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="dashboard-body dashboard-body--admin">
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- ============================================================
+       STICKY TOPBAR — admin variant
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <div class="container topbar__inner">
+
+      <a href="index.html" class="brand">
+        <div class="brand__logo-icon">CC</div>
+        <span class="brand__name">Campus<strong>Connect</strong></span>
+        <span class="brand__badge">Admin</span>
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+
+      <nav class="topbar__nav" id="topbar-nav" role="navigation" aria-label="Admin navigation">
+        <ul class="nav-list">
+          <li><a class="nav-link nav-link--active" href="#manage-students">👤 Students</a></li>
+          <li><a class="nav-link" href="#manage-assignments">📁 Assignments</a></li>
+          <li><a class="nav-link" href="#manage-jobs">💼 Jobs</a></li>
+          <li><a class="nav-link" href="#manage-notices">📋 Notices</a></li>
+        </ul>
+      </nav>
+
+      <div class="topbar__actions">
+        <details class="user-menu" id="user-menu">
+          <summary class="user-menu__trigger">
+            <span class="avatar avatar--admin" id="admin-avatar">A</span>
+            <span class="user-menu__name" id="admin-name">Admin</span>
+          </summary>
+          <ul class="user-menu__dropdown">
+            <li><a href="#">Settings</a></li>
+            <li><a href="index.html">Sign Out</a></li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <main id="main-content" class="dashboard-main" role="main">
+    <div class="container">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-header__title">Admin Control Panel</h1>
+          <p class="page-header__subtitle">Manage all campus data from one place.</p>
+        </div>
+      </div>
+
+      <!-- Overview stats — filled by admin.js -->
+      <div class="stats-bar" role="region" aria-label="Platform statistics">
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-students">—</span>
+          <span class="stat-card__label">Total Students</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-assignments">—</span>
+          <span class="stat-card__label">Assignments</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-jobs">—</span>
+          <span class="stat-card__label">Job Listings</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value" id="stat-notices">—</span>
+          <span class="stat-card__label">Active Notices</span>
+        </div>
+      </div>
+
+      <!-- ==================================================
+           MODULE 1 — STUDENT MANAGEMENT
+      ================================================== -->
+      <section class="crud-section" id="manage-students" aria-labelledby="h-students">
+        <header class="section-header">
+          <h2 class="section-header__title" id="h-students">
+            <span class="section-icon">👤</span>
+            Student Management
+          </h2>
+          <button class="btn btn--primary btn--sm" id="btn-add-student"
+                  aria-expanded="false" aria-controls="form-add-student">
+            + Add Student
+          </button>
+        </header>
+
+        <!-- Add / Edit form — admin.js toggles visibility -->
+        <form class="crud-form" id="form-add-student" method="post" action="#" hidden novalidate>
+          <h3 class="crud-form__heading" id="student-form-title">Add New Student</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="s-firstname">First name</label>
+              <input class="form-input" type="text" id="s-firstname" name="firstName"
+                     placeholder="First name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="s-lastname">Last name</label>
+              <input class="form-input" type="text" id="s-lastname" name="lastName"
+                     placeholder="Last name" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="s-email">Email</label>
+              <input class="form-input" type="email" id="s-email" name="email"
+                     placeholder="student@campus.edu" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="s-roll">Roll Number</label>
+              <input class="form-input" type="text" id="s-roll" name="rollNumber"
+                     placeholder="e.g. CS2024001" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="s-dept">Department</label>
+              <input class="form-input" type="text" id="s-dept" name="department"
+                     placeholder="e.g. Computer Science" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="s-year">Year</label>
+              <select class="form-select" id="s-year" name="year">
+                <option value="">Select year…</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+          </div>
+          <!-- Hidden ID field for edit mode -->
+          <input type="hidden" id="s-id" name="id" value="" />
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit">Save Student</button>
+            <button class="btn btn--ghost" type="button" data-cancel="form-add-student">Cancel</button>
+          </div>
+        </form>
+
+        <!-- Table toolbar -->
+        <div class="table-toolbar">
+          <label class="sr-only" for="search-students">Search</label>
+          <input class="form-input table-toolbar__search" type="search" id="search-students"
+                 placeholder="Search students…" />
+        </div>
+
+        <!-- Data table — rows injected by admin.js -->
+        <div class="table-wrapper" role="region" aria-label="Student records" tabindex="0">
+          <table class="data-table" id="table-students">
+            <caption class="sr-only">Registered students</caption>
+            <thead>
+              <tr>
+                <th scope="col">Roll No.</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Department</th>
+                <th scope="col">Year</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-students">
+              <!-- Placeholder row — admin.js replaces this -->
+              <tr id="students-placeholder">
+                <td colspan="6">
+                  <p class="empty-state">No students yet. Add one above.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================================================
+           MODULE 2 — ASSIGNMENT CREATOR
+      ================================================== -->
+      <section class="crud-section" id="manage-assignments" aria-labelledby="h-assignments">
+        <header class="section-header">
+          <h2 class="section-header__title" id="h-assignments">
+            <span class="section-icon">📁</span>
+            Assignment Management
+          </h2>
+          <button class="btn btn--primary btn--sm" id="btn-add-assignment"
+                  aria-expanded="false" aria-controls="form-add-assignment">
+            + New Assignment
+          </button>
+        </header>
+
+        <form class="crud-form" id="form-add-assignment" method="post" action="#" hidden novalidate>
+          <h3 class="crud-form__heading" id="assignment-form-title">Create Assignment</h3>
+
+          <div class="form-group">
+            <label class="form-label" for="a-title">Title</label>
+            <input class="form-input" type="text" id="a-title" name="title"
+                   placeholder="Assignment title" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="a-subject">Subject</label>
+            <input class="form-input" type="text" id="a-subject" name="subject"
+                   placeholder="e.g. Data Structures" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="a-desc">Description</label>
+            <textarea class="form-textarea" id="a-desc" name="description"
+                      placeholder="Describe the task, requirements, references…" rows="4"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="a-due">Due Date</label>
+              <input class="form-input" type="date" id="a-due" name="dueDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="a-target">Target Year</label>
+              <select class="form-select" id="a-target" name="targetYear">
+                <option value="all">All Years</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+          </div>
+
+          <input type="hidden" id="a-id" name="id" value="" />
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit">Publish Assignment</button>
+            <button class="btn btn--ghost" type="button" data-cancel="form-add-assignment">Cancel</button>
+          </div>
+        </form>
+
+        <div class="table-toolbar">
+          <label class="sr-only" for="search-assignments">Search</label>
+          <input class="form-input table-toolbar__search" type="search" id="search-assignments"
+                 placeholder="Search assignments…" />
+        </div>
+
+        <div class="table-wrapper" role="region" aria-label="Assignments" tabindex="0">
+          <table class="data-table" id="table-assignments">
+            <caption class="sr-only">Assignments list</caption>
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Target</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-assignments">
+              <tr id="assignments-placeholder">
+                <td colspan="5">
+                  <p class="empty-state">No assignments yet. Create one above.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================================================
+           MODULE 3 — JOB POSTING PORTAL
+      ================================================== -->
+      <section class="crud-section" id="manage-jobs" aria-labelledby="h-jobs">
+        <header class="section-header">
+          <h2 class="section-header__title" id="h-jobs">
+            <span class="section-icon">💼</span>
+            Job Posting Portal
+          </h2>
+          <button class="btn btn--primary btn--sm" id="btn-add-job"
+                  aria-expanded="false" aria-controls="form-add-job">
+            + Post Job
+          </button>
+        </header>
+
+        <form class="crud-form" id="form-add-job" method="post" action="#" hidden novalidate>
+          <h3 class="crud-form__heading" id="job-form-title">Post New Job</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="j-title">Job Role / Title</label>
+              <input class="form-input" type="text" id="j-title" name="title"
+                     placeholder="e.g. Software Engineer Intern" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="j-company">Company Name</label>
+              <input class="form-input" type="text" id="j-company" name="company"
+                     placeholder="Company name" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="j-package">Package / Stipend</label>
+              <input class="form-input" type="text" id="j-package" name="package"
+                     placeholder="e.g. ₹8 LPA / ₹25,000/month" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="j-location">Location</label>
+              <input class="form-input" type="text" id="j-location" name="location"
+                     placeholder="e.g. Remote / Mumbai" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="j-eligibility">Eligibility</label>
+            <input class="form-input" type="text" id="j-eligibility" name="eligibility"
+                   placeholder="e.g. 3rd & 4th Year, 7.0+ CGPA" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="j-desc">Job Description</label>
+            <textarea class="form-textarea" id="j-desc" name="description"
+                      placeholder="Role details, responsibilities, required skills…" rows="4"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="j-deadline">Application Deadline</label>
+              <input class="form-input" type="date" id="j-deadline" name="deadline" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="j-link">Apply Link</label>
+              <input class="form-input" type="url" id="j-link" name="applyLink"
+                     placeholder="https://company.com/apply" />
+            </div>
+          </div>
+
+          <input type="hidden" id="j-id" name="id" value="" />
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit">Post Job Listing</button>
+            <button class="btn btn--ghost" type="button" data-cancel="form-add-job">Cancel</button>
+          </div>
+        </form>
+
+        <div class="table-toolbar">
+          <label class="sr-only" for="search-jobs">Search</label>
+          <input class="form-input table-toolbar__search" type="search" id="search-jobs"
+                 placeholder="Search job listings…" />
+        </div>
+
+        <div class="table-wrapper" role="region" aria-label="Job listings" tabindex="0">
+          <table class="data-table" id="table-jobs">
+            <caption class="sr-only">Posted job opportunities</caption>
+            <thead>
+              <tr>
+                <th scope="col">Role</th>
+                <th scope="col">Company</th>
+                <th scope="col">Package</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-jobs">
+              <tr id="jobs-placeholder">
+                <td colspan="5">
+                  <p class="empty-state">No job listings yet. Post one above.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================================================
+           MODULE 4 — NOTICE / ANNOUNCEMENT BROADCAST
+      ================================================== -->
+      <section class="crud-section" id="manage-notices" aria-labelledby="h-notices">
+        <header class="section-header">
+          <h2 class="section-header__title" id="h-notices">
+            <span class="section-icon">📋</span>
+            Notice Board Management
+          </h2>
+          <button class="btn btn--primary btn--sm" id="btn-add-notice"
+                  aria-expanded="false" aria-controls="form-add-notice">
+            + Broadcast Notice
+          </button>
+        </header>
+
+        <form class="crud-form" id="form-add-notice" method="post" action="#" hidden novalidate>
+          <h3 class="crud-form__heading" id="notice-form-title">New Announcement</h3>
+
+          <div class="form-group">
+            <label class="form-label" for="n-title">Notice Title</label>
+            <input class="form-input" type="text" id="n-title" name="title"
+                   placeholder="Brief subject line" required />
+          </div>
+
+          <!-- Main content area — the broadcast text -->
+          <div class="form-group">
+            <label class="form-label" for="n-body">Announcement Text</label>
+            <textarea class="form-textarea" id="n-body" name="body"
+                      placeholder="Write the full notice content here. Keep it clear and concise."
+                      rows="6" required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="n-category">Category</label>
+              <select class="form-select" id="n-category" name="category">
+                <option value="general">General</option>
+                <option value="academic">Academic</option>
+                <option value="event">Event</option>
+                <option value="urgent">🔴 Urgent</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="n-audience">Audience</label>
+              <select class="form-select" id="n-audience" name="audience">
+                <option value="all">All</option>
+                <option value="student">Students Only</option>
+                <option value="admin">Admins Only</option>
+              </select>
+            </div>
+          </div>
+
+          <input type="hidden" id="n-id" name="id" value="" />
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit">Publish Notice</button>
+            <button class="btn btn--ghost" type="button" data-cancel="form-add-notice">Cancel</button>
+          </div>
+        </form>
+
+        <div class="table-toolbar">
+          <label class="sr-only" for="search-notices">Search</label>
+          <input class="form-input table-toolbar__search" type="search" id="search-notices"
+                 placeholder="Search notices…" />
+        </div>
+
+        <div class="table-wrapper" role="region" aria-label="Notices" tabindex="0">
+          <table class="data-table" id="table-notices">
+            <caption class="sr-only">Published notices</caption>
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Category</th>
+                <th scope="col">Audience</th>
+                <th scope="col">Published</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-notices">
+              <tr id="notices-placeholder">
+                <td colspan="5">
+                  <p class="empty-state">No notices published yet.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+    <!-- /container -->
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p class="site-footer__copy">&copy; 2026 Campus Connect — All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- TODO: Replace with real API integration -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
