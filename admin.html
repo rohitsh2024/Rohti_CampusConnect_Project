@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
   <!--
-    Campus Connect — Admin Control Panel (admin.html)
-    Full CRUD for: Students, Assignments, Jobs, Notices
-    TODO: Hook all forms up to the REST API in admin.js
-  -->
+    Campus Connect — Admin Control Panel  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Campus Connect — Admin Control Panel." />
@@ -20,9 +17,7 @@
 
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <!-- ============================================================
-       STICKY TOPBAR — admin variant
-  ============================================================ -->
+  <!--  admin variant -->
   <header class="site-header" role="banner">
     <div class="container topbar__inner">
 
@@ -59,9 +54,7 @@
     </div>
   </header>
 
-  <!-- ============================================================
-       MAIN CONTENT
-  ============================================================ -->
+  <!--   MAIN CONTENT -->
   <main id="main-content" class="dashboard-main" role="main">
     <div class="container">
 
@@ -72,7 +65,7 @@
         </div>
       </div>
 
-      <!-- Overview stats — filled by admin.js -->
+      <!--filled by admin.js -->
       <div class="stats-bar" role="region" aria-label="Platform statistics">
         <div class="stat-card">
           <span class="stat-card__value" id="stat-students">—</span>
@@ -92,9 +85,7 @@
         </div>
       </div>
 
-      <!-- ==================================================
-           MODULE 1 — STUDENT MANAGEMENT
-      ================================================== -->
+      <!-- MODULE 1 — STUDENT MANAGEMENT-->
       <section class="crud-section" id="manage-students" aria-labelledby="h-students">
         <header class="section-header">
           <h2 class="section-header__title" id="h-students">
@@ -107,7 +98,7 @@
           </button>
         </header>
 
-        <!-- Add / Edit form — admin.js toggles visibility -->
+        <!-- Add / Edit form  -->
         <form class="crud-form" id="form-add-student" method="post" action="#" hidden novalidate>
           <h3 class="crud-form__heading" id="student-form-title">Add New Student</h3>
           <div class="form-row">
@@ -151,7 +142,7 @@
               </select>
             </div>
           </div>
-          <!-- Hidden ID field for edit mode -->
+          <!-- Hidden ID  -->
           <input type="hidden" id="s-id" name="id" value="" />
           <div class="form-actions">
             <button class="btn btn--primary" type="submit">Save Student</button>
@@ -166,7 +157,7 @@
                  placeholder="Search students…" />
         </div>
 
-        <!-- Data table — rows injected by admin.js -->
+        <!-- Data table — -->
         <div class="table-wrapper" role="region" aria-label="Student records" tabindex="0">
           <table class="data-table" id="table-students">
             <caption class="sr-only">Registered students</caption>
@@ -181,7 +172,7 @@
               </tr>
             </thead>
             <tbody id="tbody-students">
-              <!-- Placeholder row — admin.js replaces this -->
+              <!-- Placeholder row  -->
               <tr id="students-placeholder">
                 <td colspan="6">
                   <p class="empty-state">No students yet. Add one above.</p>
@@ -192,9 +183,7 @@
         </div>
       </section>
 
-      <!-- ==================================================
-           MODULE 2 — ASSIGNMENT CREATOR
-      ================================================== -->
+      <!--  MODULE 2 — ASSIGNMENT CREATOR -->
       <section class="crud-section" id="manage-assignments" aria-labelledby="h-assignments">
         <header class="section-header">
           <h2 class="section-header__title" id="h-assignments">
@@ -281,9 +270,7 @@
         </div>
       </section>
 
-      <!-- ==================================================
-           MODULE 3 — JOB POSTING PORTAL
-      ================================================== -->
+      <!--MODULE 3 — JOB POSTING PORTAL-->
       <section class="crud-section" id="manage-jobs" aria-labelledby="h-jobs">
         <header class="section-header">
           <h2 class="section-header__title" id="h-jobs">
@@ -385,9 +372,7 @@
         </div>
       </section>
 
-      <!-- ==================================================
-           MODULE 4 — NOTICE / ANNOUNCEMENT BROADCAST
-      ================================================== -->
+      <!--  MODULE 4 — NOTICE / ANNOUNCEMENT BROADCAST-->
       <section class="crud-section" id="manage-notices" aria-labelledby="h-notices">
         <header class="section-header">
           <h2 class="section-header__title" id="h-notices">
@@ -409,7 +394,7 @@
                    placeholder="Brief subject line" required />
           </div>
 
-          <!-- Main content area — the broadcast text -->
+          <!-- Main content area  -->
           <div class="form-group">
             <label class="form-label" for="n-body">Announcement Text</label>
             <textarea class="form-textarea" id="n-body" name="body"
