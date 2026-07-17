@@ -1,476 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--
-    Campus Connect — Admin Control Panel  -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Campus Connect — Admin Control Panel." />
-  <title>Campus Connect | Admin Panel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/admin.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CampusConnect | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
 </head>
-<body class="dashboard-body dashboard-body--admin">
+<body class="a-body">
+<a class="skip-link" href="#main">Skip to main content</a>
 
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+<!-- SIDEBAR -->
+<aside class="a-sidebar" id="a-sidebar">
+  <div class="a-sidebar__brand">
+    <div class="a-brand-mark">CC</div>
+    <span class="a-brand-name">Campus<strong>Connect</strong></span>
+  </div>
+  <nav class="a-sidebar__nav" aria-label="Admin navigation">
+    <a class="a-nav-link active" href="#manage-students">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+      Students
+    </a>
+    <a class="a-nav-link" href="#manage-assignments">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.396 0 2.694.386 3.8 1.053A7.968 7.968 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+      Assignments
+    </a>
+    <a class="a-nav-link" href="#manage-jobs">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/></svg>
+      Jobs
+    </a>
+    <a class="a-nav-link" href="#manage-notices">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+      Notices
+    </a>
+  </nav>
+  <div class="a-sidebar__footer">
+    <button class="a-signout-btn" id="btn-signout">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+      Sign Out
+    </button>
+  </div>
+</aside>
 
-  <!--  admin variant -->
-  <header class="site-header" role="banner">
-    <div class="container topbar__inner">
+<!-- MAIN AREA -->
+<div class="a-shell">
 
-      <a href="index.html" class="brand">
-        <div class="brand__logo-icon">CC</div>
-        <span class="brand__name">Campus<strong>Connect</strong></span>
-        <span class="brand__badge">Admin</span>
-      </a>
-
-      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-
-      <nav class="topbar__nav" id="topbar-nav" role="navigation" aria-label="Admin navigation">
-        <ul class="nav-list">
-          <li><a class="nav-link nav-link--active" href="#manage-students">👤 Students</a></li>
-          <li><a class="nav-link" href="#manage-assignments">📁 Assignments</a></li>
-          <li><a class="nav-link" href="#manage-jobs">💼 Jobs</a></li>
-          <li><a class="nav-link" href="#manage-notices">📋 Notices</a></li>
-        </ul>
-      </nav>
-
-      <div class="topbar__actions">
-        <details class="user-menu" id="user-menu">
-          <summary class="user-menu__trigger">
-            <span class="avatar avatar--admin" id="admin-avatar">A</span>
-            <span class="user-menu__name" id="admin-name">Admin</span>
-          </summary>
-          <ul class="user-menu__dropdown">
-            <li><a href="#">Settings</a></li>
-            <li><a href="index.html">Sign Out</a></li>
-          </ul>
-        </details>
+  <!-- Topbar -->
+  <header class="a-topbar" role="banner">
+    <button class="a-menu-btn" id="topbar-nav" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+    </button>
+    <div class="a-topbar__center">
+      <span class="a-topbar__title">Admin Control Panel</span>
+    </div>
+    <div class="a-topbar__right">
+      <div class="a-user-menu" id="user-menu">
+        <button class="a-user-btn" id="user-trigger" type="button" aria-expanded="false">
+          <div class="a-avatar" id="admin-avatar">A</div>
+          <span class="a-user-name" id="admin-name">Admin</span>
+          <svg viewBox="0 0 12 8" fill="none" style="width:12px;height:8px;flex-shrink:0;color:rgba(255,255,255,.5)"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="a-dropdown" id="user-dropdown">
+          <button type="button" class="a-dropdown__signout" id="btn-signout-top">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+            Sign Out
+          </button>
+        </div>
       </div>
-
     </div>
   </header>
 
-  <!--   MAIN CONTENT -->
-  <main id="main-content" class="dashboard-main" role="main">
-    <div class="container">
+  <!-- Page content -->
+  <main id="main" class="a-main" role="main">
 
-      <div class="page-header">
-        <div>
-          <h1 class="page-header__title">Admin Control Panel</h1>
-          <p class="page-header__subtitle">Manage all campus data from one place.</p>
+    <!-- Stats -->
+    <div class="a-stats">
+      <div class="a-stat a-stat--indigo">
+        <div class="a-stat__icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg></div>
+        <div class="a-stat__body">
+          <span class="a-stat__val" id="stat-students">—</span>
+          <span class="a-stat__lbl">Total Students</span>
         </div>
       </div>
-
-      <!--filled by admin.js -->
-      <div class="stats-bar" role="region" aria-label="Platform statistics">
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-students">—</span>
-          <span class="stat-card__label">Total Students</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-assignments">—</span>
-          <span class="stat-card__label">Assignments</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-jobs">—</span>
-          <span class="stat-card__label">Job Listings</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-notices">—</span>
-          <span class="stat-card__label">Active Notices</span>
+      <div class="a-stat a-stat--cyan">
+        <div class="a-stat__icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.396 0 2.694.386 3.8 1.053A7.968 7.968 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg></div>
+        <div class="a-stat__body">
+          <span class="a-stat__val" id="stat-assignments">—</span>
+          <span class="a-stat__lbl">Assignments</span>
         </div>
       </div>
-
-      <!-- MODULE 1 — STUDENT MANAGEMENT-->
-      <section class="crud-section" id="manage-students" aria-labelledby="h-students">
-        <header class="section-header">
-          <h2 class="section-header__title" id="h-students">
-            <span class="section-icon">👤</span>
-            Student Management
-          </h2>
-          <button class="btn btn--primary btn--sm" id="btn-add-student"
-                  aria-expanded="false" aria-controls="form-add-student">
-            + Add Student
-          </button>
-        </header>
-
-        <!-- Add / Edit form  -->
-        <form class="crud-form" id="form-add-student" method="post" action="#" hidden novalidate>
-          <h3 class="crud-form__heading" id="student-form-title">Add New Student</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="s-firstname">First name</label>
-              <input class="form-input" type="text" id="s-firstname" name="firstName"
-                     placeholder="First name" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="s-lastname">Last name</label>
-              <input class="form-input" type="text" id="s-lastname" name="lastName"
-                     placeholder="Last name" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="s-email">Email</label>
-              <input class="form-input" type="email" id="s-email" name="email"
-                     placeholder="student@campus.edu" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="s-roll">Roll Number</label>
-              <input class="form-input" type="text" id="s-roll" name="rollNumber"
-                     placeholder="e.g. CS2024001" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="s-dept">Department</label>
-              <input class="form-input" type="text" id="s-dept" name="department"
-                     placeholder="e.g. Computer Science" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="s-year">Year</label>
-              <select class="form-select" id="s-year" name="year">
-                <option value="">Select year…</option>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-                <option value="4">4th Year</option>
-              </select>
-            </div>
-          </div>
-          <!-- Hidden ID  -->
-          <input type="hidden" id="s-id" name="id" value="" />
-          <div class="form-actions">
-            <button class="btn btn--primary" type="submit">Save Student</button>
-            <button class="btn btn--ghost" type="button" data-cancel="form-add-student">Cancel</button>
-          </div>
-        </form>
-
-        <!-- Table toolbar -->
-        <div class="table-toolbar">
-          <label class="sr-only" for="search-students">Search</label>
-          <input class="form-input table-toolbar__search" type="search" id="search-students"
-                 placeholder="Search students…" />
+      <div class="a-stat a-stat--violet">
+        <div class="a-stat__icon"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5z" clip-rule="evenodd"/></svg></div>
+        <div class="a-stat__body">
+          <span class="a-stat__val" id="stat-jobs">—</span>
+          <span class="a-stat__lbl">Job Listings</span>
         </div>
-
-        <!-- Data table — -->
-        <div class="table-wrapper" role="region" aria-label="Student records" tabindex="0">
-          <table class="data-table" id="table-students">
-            <caption class="sr-only">Registered students</caption>
-            <thead>
-              <tr>
-                <th scope="col">Roll No.</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Department</th>
-                <th scope="col">Year</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-students">
-              <!-- Placeholder row  -->
-              <tr id="students-placeholder">
-                <td colspan="6">
-                  <p class="empty-state">No students yet. Add one above.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <div class="a-stat a-stat--rose">
+        <div class="a-stat__icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg></div>
+        <div class="a-stat__body">
+          <span class="a-stat__val" id="stat-notices">—</span>
+          <span class="a-stat__lbl">Active Notices</span>
         </div>
-      </section>
-
-      <!--  MODULE 2 — ASSIGNMENT CREATOR -->
-      <section class="crud-section" id="manage-assignments" aria-labelledby="h-assignments">
-        <header class="section-header">
-          <h2 class="section-header__title" id="h-assignments">
-            <span class="section-icon">📁</span>
-            Assignment Management
-          </h2>
-          <button class="btn btn--primary btn--sm" id="btn-add-assignment"
-                  aria-expanded="false" aria-controls="form-add-assignment">
-            + New Assignment
-          </button>
-        </header>
-
-        <form class="crud-form" id="form-add-assignment" method="post" action="#" hidden novalidate>
-          <h3 class="crud-form__heading" id="assignment-form-title">Create Assignment</h3>
-
-          <div class="form-group">
-            <label class="form-label" for="a-title">Title</label>
-            <input class="form-input" type="text" id="a-title" name="title"
-                   placeholder="Assignment title" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="a-subject">Subject</label>
-            <input class="form-input" type="text" id="a-subject" name="subject"
-                   placeholder="e.g. Data Structures" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="a-desc">Description</label>
-            <textarea class="form-textarea" id="a-desc" name="description"
-                      placeholder="Describe the task, requirements, references…" rows="4"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="a-due">Due Date</label>
-              <input class="form-input" type="date" id="a-due" name="dueDate" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="a-target">Target Year</label>
-              <select class="form-select" id="a-target" name="targetYear">
-                <option value="all">All Years</option>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                <option value="3">3rd Year</option>
-                <option value="4">4th Year</option>
-              </select>
-            </div>
-          </div>
-
-          <input type="hidden" id="a-id" name="id" value="" />
-          <div class="form-actions">
-            <button class="btn btn--primary" type="submit">Publish Assignment</button>
-            <button class="btn btn--ghost" type="button" data-cancel="form-add-assignment">Cancel</button>
-          </div>
-        </form>
-
-        <div class="table-toolbar">
-          <label class="sr-only" for="search-assignments">Search</label>
-          <input class="form-input table-toolbar__search" type="search" id="search-assignments"
-                 placeholder="Search assignments…" />
-        </div>
-
-        <div class="table-wrapper" role="region" aria-label="Assignments" tabindex="0">
-          <table class="data-table" id="table-assignments">
-            <caption class="sr-only">Assignments list</caption>
-            <thead>
-              <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Due Date</th>
-                <th scope="col">Target</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-assignments">
-              <tr id="assignments-placeholder">
-                <td colspan="5">
-                  <p class="empty-state">No assignments yet. Create one above.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!--MODULE 3 — JOB POSTING PORTAL-->
-      <section class="crud-section" id="manage-jobs" aria-labelledby="h-jobs">
-        <header class="section-header">
-          <h2 class="section-header__title" id="h-jobs">
-            <span class="section-icon">💼</span>
-            Job Posting Portal
-          </h2>
-          <button class="btn btn--primary btn--sm" id="btn-add-job"
-                  aria-expanded="false" aria-controls="form-add-job">
-            + Post Job
-          </button>
-        </header>
-
-        <form class="crud-form" id="form-add-job" method="post" action="#" hidden novalidate>
-          <h3 class="crud-form__heading" id="job-form-title">Post New Job</h3>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="j-title">Job Role / Title</label>
-              <input class="form-input" type="text" id="j-title" name="title"
-                     placeholder="e.g. Software Engineer Intern" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="j-company">Company Name</label>
-              <input class="form-input" type="text" id="j-company" name="company"
-                     placeholder="Company name" required />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="j-package">Package / Stipend</label>
-              <input class="form-input" type="text" id="j-package" name="package"
-                     placeholder="e.g. ₹8 LPA / ₹25,000/month" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="j-location">Location</label>
-              <input class="form-input" type="text" id="j-location" name="location"
-                     placeholder="e.g. Remote / Mumbai" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="j-eligibility">Eligibility</label>
-            <input class="form-input" type="text" id="j-eligibility" name="eligibility"
-                   placeholder="e.g. 3rd & 4th Year, 7.0+ CGPA" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="j-desc">Job Description</label>
-            <textarea class="form-textarea" id="j-desc" name="description"
-                      placeholder="Role details, responsibilities, required skills…" rows="4"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="j-deadline">Application Deadline</label>
-              <input class="form-input" type="date" id="j-deadline" name="deadline" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="j-link">Apply Link</label>
-              <input class="form-input" type="url" id="j-link" name="applyLink"
-                     placeholder="https://company.com/apply" />
-            </div>
-          </div>
-
-          <input type="hidden" id="j-id" name="id" value="" />
-          <div class="form-actions">
-            <button class="btn btn--primary" type="submit">Post Job Listing</button>
-            <button class="btn btn--ghost" type="button" data-cancel="form-add-job">Cancel</button>
-          </div>
-        </form>
-
-        <div class="table-toolbar">
-          <label class="sr-only" for="search-jobs">Search</label>
-          <input class="form-input table-toolbar__search" type="search" id="search-jobs"
-                 placeholder="Search job listings…" />
-        </div>
-
-        <div class="table-wrapper" role="region" aria-label="Job listings" tabindex="0">
-          <table class="data-table" id="table-jobs">
-            <caption class="sr-only">Posted job opportunities</caption>
-            <thead>
-              <tr>
-                <th scope="col">Role</th>
-                <th scope="col">Company</th>
-                <th scope="col">Package</th>
-                <th scope="col">Deadline</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-jobs">
-              <tr id="jobs-placeholder">
-                <td colspan="5">
-                  <p class="empty-state">No job listings yet. Post one above.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!--  MODULE 4 — NOTICE / ANNOUNCEMENT BROADCAST-->
-      <section class="crud-section" id="manage-notices" aria-labelledby="h-notices">
-        <header class="section-header">
-          <h2 class="section-header__title" id="h-notices">
-            <span class="section-icon">📋</span>
-            Notice Board Management
-          </h2>
-          <button class="btn btn--primary btn--sm" id="btn-add-notice"
-                  aria-expanded="false" aria-controls="form-add-notice">
-            + Broadcast Notice
-          </button>
-        </header>
-
-        <form class="crud-form" id="form-add-notice" method="post" action="#" hidden novalidate>
-          <h3 class="crud-form__heading" id="notice-form-title">New Announcement</h3>
-
-          <div class="form-group">
-            <label class="form-label" for="n-title">Notice Title</label>
-            <input class="form-input" type="text" id="n-title" name="title"
-                   placeholder="Brief subject line" required />
-          </div>
-
-          <!-- Main content area  -->
-          <div class="form-group">
-            <label class="form-label" for="n-body">Announcement Text</label>
-            <textarea class="form-textarea" id="n-body" name="body"
-                      placeholder="Write the full notice content here. Keep it clear and concise."
-                      rows="6" required></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="n-category">Category</label>
-              <select class="form-select" id="n-category" name="category">
-                <option value="general">General</option>
-                <option value="academic">Academic</option>
-                <option value="event">Event</option>
-                <option value="urgent">🔴 Urgent</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="n-audience">Audience</label>
-              <select class="form-select" id="n-audience" name="audience">
-                <option value="all">All</option>
-                <option value="student">Students Only</option>
-                <option value="admin">Admins Only</option>
-              </select>
-            </div>
-          </div>
-
-          <input type="hidden" id="n-id" name="id" value="" />
-          <div class="form-actions">
-            <button class="btn btn--primary" type="submit">Publish Notice</button>
-            <button class="btn btn--ghost" type="button" data-cancel="form-add-notice">Cancel</button>
-          </div>
-        </form>
-
-        <div class="table-toolbar">
-          <label class="sr-only" for="search-notices">Search</label>
-          <input class="form-input table-toolbar__search" type="search" id="search-notices"
-                 placeholder="Search notices…" />
-        </div>
-
-        <div class="table-wrapper" role="region" aria-label="Notices" tabindex="0">
-          <table class="data-table" id="table-notices">
-            <caption class="sr-only">Published notices</caption>
-            <thead>
-              <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Category</th>
-                <th scope="col">Audience</th>
-                <th scope="col">Published</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-notices">
-              <tr id="notices-placeholder">
-                <td colspan="5">
-                  <p class="empty-state">No notices published yet.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
+      </div>
     </div>
-    <!-- /container -->
+
+    <!-- MODULE 1: Students -->
+    <section class="a-module" id="manage-students">
+      <div class="a-module__head">
+        <div class="a-module__title-wrap">
+          <div class="a-module__ico a-module__ico--indigo"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg></div>
+          <h2 class="a-module__title" id="h-students">Student Management</h2>
+        </div>
+        <button class="a-add-btn" id="btn-add-student" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          Add Student
+        </button>
+      </div>
+      <form class="a-form" id="form-add-student" novalidate hidden>
+        <h3 class="a-form__title" id="student-form-title">Add New Student</h3>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>First name</label><input type="text" id="s-firstname" placeholder="First name" required/></div>
+          <div class="a-form__group"><label>Last name</label><input type="text" id="s-lastname" placeholder="Last name" required/></div>
+        </div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Email</label><input type="email" id="s-email" placeholder="student@campus.edu" required/></div>
+          <div class="a-form__group"><label>Roll Number</label><input type="text" id="s-roll" placeholder="CS2024001" required/></div>
+        </div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Department</label><input type="text" id="s-dept" placeholder="Computer Science"/></div>
+          <div class="a-form__group"><label>Year</label>
+            <select id="s-year"><option value="">Select…</option><option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year</option></select>
+          </div>
+        </div>
+        <input type="hidden" id="s-id"/>
+        <div class="a-form__actions">
+          <button class="a-form__save" type="submit">Save Student</button>
+          <button class="a-form__cancel" type="button" data-cancel="form-add-student">Cancel</button>
+        </div>
+      </form>
+      <div class="a-search-bar">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input type="search" id="search-students" placeholder="Search students…"/>
+      </div>
+      <div class="a-table-wrap" tabindex="0">
+        <table class="a-table">
+          <thead><tr><th>Roll No.</th><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-students"><tr><td colspan="6"><p class="a-empty">No students yet.</p></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULE 2: Assignments -->
+    <section class="a-module" id="manage-assignments">
+      <div class="a-module__head">
+        <div class="a-module__title-wrap">
+          <div class="a-module__ico a-module__ico--cyan"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.396 0 2.694.386 3.8 1.053A7.968 7.968 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg></div>
+          <h2 class="a-module__title" id="h-assignments">Assignment Management</h2>
+        </div>
+        <button class="a-add-btn a-add-btn--cyan" id="btn-add-assignment" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          New Assignment
+        </button>
+      </div>
+      <form class="a-form" id="form-add-assignment" novalidate hidden>
+        <h3 class="a-form__title" id="assignment-form-title">Create Assignment</h3>
+        <div class="a-form__group"><label>Title</label><input type="text" id="a-title" placeholder="Assignment title" required/></div>
+        <div class="a-form__group"><label>Subject</label><input type="text" id="a-subject" placeholder="e.g. Data Structures" required/></div>
+        <div class="a-form__group"><label>Description</label><textarea id="a-desc" rows="3" placeholder="Task details…"></textarea></div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Due Date</label><input type="date" id="a-due" required/></div>
+          <div class="a-form__group"><label>Target Year</label>
+            <select id="a-target"><option value="all">All Years</option><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option><option value="4">4th</option></select>
+          </div>
+        </div>
+        <input type="hidden" id="a-id"/>
+        <div class="a-form__actions">
+          <button class="a-form__save" type="submit">Publish Assignment</button>
+          <button class="a-form__cancel" type="button" data-cancel="form-add-assignment">Cancel</button>
+        </div>
+      </form>
+      <div class="a-search-bar">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input type="search" id="search-assignments" placeholder="Search assignments…"/>
+      </div>
+      <div class="a-table-wrap" tabindex="0">
+        <table class="a-table">
+          <thead><tr><th>Title</th><th>Subject</th><th>Due Date</th><th>Target</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-assignments"><tr><td colspan="5"><p class="a-empty">No assignments yet.</p></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULE 3: Jobs -->
+    <section class="a-module" id="manage-jobs">
+      <div class="a-module__head">
+        <div class="a-module__title-wrap">
+          <div class="a-module__ico a-module__ico--violet"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5z" clip-rule="evenodd"/></svg></div>
+          <h2 class="a-module__title" id="h-jobs">Job Posting Portal</h2>
+        </div>
+        <button class="a-add-btn a-add-btn--violet" id="btn-add-job" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          Post Job
+        </button>
+      </div>
+      <form class="a-form" id="form-add-job" novalidate hidden>
+        <h3 class="a-form__title" id="job-form-title">Post New Job</h3>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Job Title</label><input type="text" id="j-title" placeholder="e.g. SWE Intern" required/></div>
+          <div class="a-form__group"><label>Company</label><input type="text" id="j-company" placeholder="Company name" required/></div>
+        </div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Package</label><input type="text" id="j-package" placeholder="₹8 LPA"/></div>
+          <div class="a-form__group"><label>Location</label><input type="text" id="j-location" placeholder="Remote / Mumbai"/></div>
+        </div>
+        <div class="a-form__group"><label>Description</label><textarea id="j-desc" rows="3" placeholder="Role details, skills…"></textarea></div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Deadline</label><input type="date" id="j-deadline" required/></div>
+          <div class="a-form__group"><label>Apply Link</label><input type="url" id="j-link" placeholder="https://company.com/apply"/></div>
+        </div>
+        <input type="hidden" id="j-id"/>
+        <div class="a-form__actions">
+          <button class="a-form__save" type="submit">Post Listing</button>
+          <button class="a-form__cancel" type="button" data-cancel="form-add-job">Cancel</button>
+        </div>
+      </form>
+      <div class="a-search-bar">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input type="search" id="search-jobs" placeholder="Search jobs…"/>
+      </div>
+      <div class="a-table-wrap" tabindex="0">
+        <table class="a-table">
+          <thead><tr><th>Title</th><th>Company</th><th>Package</th><th>Deadline</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-jobs"><tr><td colspan="5"><p class="a-empty">No jobs yet.</p></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULE 4: Notices -->
+    <section class="a-module" id="manage-notices">
+      <div class="a-module__head">
+        <div class="a-module__title-wrap">
+          <div class="a-module__ico a-module__ico--rose"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg></div>
+          <h2 class="a-module__title" id="h-notices">Notice Board</h2>
+        </div>
+        <button class="a-add-btn a-add-btn--rose" id="btn-add-notice" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          Broadcast
+        </button>
+      </div>
+      <form class="a-form" id="form-add-notice" novalidate hidden>
+        <h3 class="a-form__title" id="notice-form-title">New Announcement</h3>
+        <div class="a-form__group"><label>Title</label><input type="text" id="n-title" placeholder="Notice subject" required/></div>
+        <div class="a-form__group"><label>Content</label><textarea id="n-body" rows="5" placeholder="Full announcement…" required></textarea></div>
+        <div class="a-form__row">
+          <div class="a-form__group"><label>Category</label>
+            <select id="n-category"><option value="general">General</option><option value="academic">Academic</option><option value="event">Event</option><option value="urgent">🔴 Urgent</option></select>
+          </div>
+          <div class="a-form__group"><label>Audience</label>
+            <select id="n-audience"><option value="all">All</option><option value="student">Students Only</option><option value="admin">Admins Only</option></select>
+          </div>
+        </div>
+        <input type="hidden" id="n-id"/>
+        <div class="a-form__actions">
+          <button class="a-form__save" type="submit">Publish Notice</button>
+          <button class="a-form__cancel" type="button" data-cancel="form-add-notice">Cancel</button>
+        </div>
+      </form>
+      <div class="a-search-bar">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input type="search" id="search-notices" placeholder="Search notices…"/>
+      </div>
+      <div class="a-table-wrap" tabindex="0">
+        <table class="a-table">
+          <thead><tr><th>Title</th><th>Category</th><th>Audience</th><th>Published</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-notices"><tr><td colspan="5"><p class="a-empty">No notices yet.</p></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
+  <footer class="a-footer"><p>&copy; 2026 CampusConnect &mdash; CountryEdu Private Limited</p></footer>
+</div>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-      <p class="site-footer__copy">&copy; 2026 Campus Connect — All rights reserved.</p>
-    </div>
-  </footer>
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
-  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
-
-  <!-- TODO: Replace with real API integration -->
-  <script src="js/admin.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

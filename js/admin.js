@@ -1,416 +1,572 @@
-/* Admin Script (admin.js)*/
+// Firebase setup — same project as auth.js
+var _A_CFG = {
+  apiKey:            "AIzaSyDqj-QVN4aSFC0iBDQEBviXORVBqF4muM0",
+  authDomain:        "campus-connect-e33be.firebaseapp.com",
+  projectId:         "campus-connect-e33be",
+  storageBucket:     "campus-connect-e33be.firebasestorage.app",
+  messagingSenderId: "214537333711",
+  appId:             "1:214537333711:web:be5eeaf0bdc65d873d40ba"
+};
+if (!firebase.apps.length) firebase.initializeApp(_A_CFG);
+var _aAuth = firebase.auth();
+var _aDb   = firebase.firestore();
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ── Stub data stores — replace with API later ─────────────
-  let students    = [
-    { id: 1, firstName: 'Rohit',   lastName: 'Sharma',  email: 'rohit@campus.edu',  rollNumber: 'CS2024042', department: 'Computer Science', year: '3' },
-    { id: 2, firstName: 'Priya',   lastName: 'Patel',   email: 'priya@campus.edu',  rollNumber: 'CS2024018', department: 'Computer Science', year: '3' },
-    { id: 3, firstName: 'Arjun',   lastName: 'Mehta',   email: 'arjun@campus.edu',  rollNumber: 'EE2024007', department: 'Electronics',      year: '2' },
-  ];
-  let assignments = [
-    { id: 1, title: 'BST Implementation', subject: 'Data Structures', dueDate: '2026-07-15', targetYear: 'all' },
-    { id: 2, title: 'ER Diagram',         subject: 'DBMS',            dueDate: '2026-07-12', targetYear: '3'   },
-  ];
-  let jobs = [
-    { id: 1, title: 'SWE Intern', company: 'TechCorp India', package: '₹25,000/mo', deadline: '2026-07-25' },
-    { id: 2, title: 'Data Analyst Intern', company: 'DataWorks', package: '₹20,000/mo', deadline: '2026-07-30' },
-  ];
-  let notices = [
-    { id: 1, title: 'Mid-Sem Exam Schedule', category: 'academic', audience: 'all', date: '2026-07-08' },
-    { id: 2, title: 'Tech Fest Registrations', category: 'event', audience: 'student', date: '2026-07-06' },
-  ];
-
-  let nextId = { students: 4, assignments: 3, jobs: 3, notices: 3 };
-
-  // ── Stats bar ─────────────────────────────────────────────
-  function updateStats() {
-    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    set('stat-students',    students.length);
-    set('stat-assignments', assignments.length);
-    set('stat-jobs',        jobs.length);
-    set('stat-notices',     notices.length);
+// Check whether this user is allowed to see the admin dashboard
+_aAuth.onAuthStateChanged(function(user) {
+  if (!user) {
+    window.location.replace("index.html");
+    return;
   }
-  updateStats();
 
-  // ── Generic form toggle helper ────────────────────────────
-  function setupToggle(btnId, formId) {
-    const btn  = document.getElementById(btnId);
-    const form = document.getElementById(formId);
-    if (!btn || !form) return;
+  var cached = sessionStorage.getItem("cc_role");
 
-    btn.addEventListener('click', () => {
-      const isOpen = !form.hidden;
-      form.hidden = isOpen;
-      btn.setAttribute('aria-expanded', String(!isOpen));
-      if (!isOpen) form.reset();
+  // Fast path — auth.js already verified the role before redirecting here
+  if (cached === "admin") {
+    _aReady(function() { bootAdmin(user); });
+    return;
+  }
+
+  if (cached && cached !== "admin") {
+    alert("Access Denied. This page is for administrators only.");
+    _aAuth.signOut();
+    sessionStorage.removeItem("cc_role");
+    window.location.replace("index.html");
+    return;
+  }
+
+  // Slow path — user navigated directly to this URL
+  _aDb.collection("users").doc(user.uid).get()
+    .then(function(snap) {
+      if (!snap.exists || !snap.data().role) {
+        _aAuth.signOut();
+        window.location.replace("index.html");
+        return;
+      }
+      var role = snap.data().role;
+      if (role !== "admin") {
+        alert("Access Denied. This page is for administrators only.");
+        _aAuth.signOut();
+        sessionStorage.removeItem("cc_role");
+        window.location.replace("index.html");
+        return;
+      }
+      sessionStorage.setItem("cc_role", "admin");
+      _aReady(function() { bootAdmin(user); });
+    })
+    .catch(function(err) {
+      // Firestore is unreachable — user still passed Firebase Auth so let them in
+      console.warn("admin.js Firestore guard error:", err.code, err.message);
+      sessionStorage.setItem("cc_role", "admin");
+      _aReady(function() { bootAdmin(user); });
     });
-
-    // Cancel buttons inside the form
-    form.querySelectorAll('[data-cancel]').forEach(cancelBtn => {
-      cancelBtn.addEventListener('click', () => {
-        form.hidden = true;
-        btn.setAttribute('aria-expanded', 'false');
-        form.reset();
-      });
-    });
-  }
-
-  setupToggle('btn-add-student',    'form-add-student');
-  setupToggle('btn-add-assignment', 'form-add-assignment');
-  setupToggle('btn-add-job',        'form-add-job');
-  setupToggle('btn-add-notice',     'form-add-notice');
-
-  // ── STUDENTS CRUD ─────────────────────────────────────────
-  function renderStudents(query = '') {
-    const tbody = document.getElementById('tbody-students');
-    if (!tbody) return;
-    const list = query
-      ? students.filter(s =>
-          `${s.firstName} ${s.lastName} ${s.email} ${s.rollNumber}`.toLowerCase().includes(query)
-        )
-      : students;
-
-    if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><p class="empty-state">No students found.</p></td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = list.map(s => `
-      <tr>
-        <td>${s.rollNumber}</td>
-        <td>${s.firstName} ${s.lastName}</td>
-        <td>${s.email}</td>
-        <td>${s.department}</td>
-        <td>${s.year}${getSuffix(s.year)} Year</td>
-        <td>
-          <div class="table-actions">
-            <button class="btn btn--sm btn--outline" onclick="editStudent(${s.id})">Edit</button>
-            <button class="btn btn--sm btn--danger"  onclick="deleteStudent(${s.id})">Delete</button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  renderStudents();
-
-  const studentForm = document.getElementById('form-add-student');
-  studentForm?.addEventListener('submit', e => {
-    e.preventDefault();
-    const id = parseInt(document.getElementById('s-id').value);
-    const data = {
-      firstName:  document.getElementById('s-firstname').value.trim(),
-      lastName:   document.getElementById('s-lastname').value.trim(),
-      email:      document.getElementById('s-email').value.trim(),
-      rollNumber: document.getElementById('s-roll').value.trim(),
-      department: document.getElementById('s-dept').value.trim(),
-      year:       document.getElementById('s-year').value,
-    };
-
-    if (id) {
-      const idx = students.findIndex(s => s.id === id);
-      if (idx > -1) students[idx] = { id, ...data };
-    } else {
-      students.push({ id: nextId.students++, ...data });
-    }
-    renderStudents();
-    updateStats();
-    studentForm.reset();
-    studentForm.hidden = true;
-    document.getElementById('btn-add-student')?.setAttribute('aria-expanded', 'false');
-    showToast(id ? 'Student updated.' : 'Student added.', 'success');
-  });
-
-  window.editStudent = (id) => {
-    const s = students.find(s => s.id === id);
-    if (!s) return;
-    document.getElementById('s-id').value        = s.id;
-    document.getElementById('s-firstname').value  = s.firstName;
-    document.getElementById('s-lastname').value   = s.lastName;
-    document.getElementById('s-email').value      = s.email;
-    document.getElementById('s-roll').value       = s.rollNumber;
-    document.getElementById('s-dept').value       = s.department;
-    document.getElementById('s-year').value       = s.year;
-    document.getElementById('student-form-title').textContent = 'Edit Student';
-    studentForm.hidden = false;
-    document.getElementById('btn-add-student')?.setAttribute('aria-expanded', 'true');
-    studentForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
-
-  window.deleteStudent = (id) => {
-    if (!confirm('Delete this student?')) return;
-    students = students.filter(s => s.id !== id);
-    renderStudents();
-    updateStats();
-    showToast('Student removed.', 'error');
-  };
-
-  document.getElementById('search-students')?.addEventListener('input', e => {
-    renderStudents(e.target.value.toLowerCase().trim());
-  });
-
-  // ── ASSIGNMENTS CRUD ──────────────────────────────────────
-  function renderAssignments(query = '') {
-    const tbody = document.getElementById('tbody-assignments');
-    if (!tbody) return;
-    const list = query
-      ? assignments.filter(a => `${a.title} ${a.subject}`.toLowerCase().includes(query))
-      : assignments;
-
-    if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5"><p class="empty-state">No assignments found.</p></td></tr>`;
-      return;
-    }
-    tbody.innerHTML = list.map(a => `
-      <tr>
-        <td>${a.title}</td>
-        <td>${a.subject}</td>
-        <td>${formatDate(a.dueDate)}</td>
-        <td>${a.targetYear === 'all' ? 'All Years' : a.targetYear + getSuffix(a.targetYear) + ' Year'}</td>
-        <td>
-          <div class="table-actions">
-            <button class="btn btn--sm btn--outline" onclick="editAssignment(${a.id})">Edit</button>
-            <button class="btn btn--sm btn--danger"  onclick="deleteAssignment(${a.id})">Delete</button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  renderAssignments();
-
-  document.getElementById('form-add-assignment')?.addEventListener('submit', e => {
-    e.preventDefault();
-    const form = e.target;
-    const id = parseInt(document.getElementById('a-id').value);
-    const data = {
-      title:      document.getElementById('a-title').value.trim(),
-      subject:    document.getElementById('a-subject').value.trim(),
-      dueDate:    document.getElementById('a-due').value,
-      targetYear: document.getElementById('a-target').value,
-    };
-    if (id) {
-      const idx = assignments.findIndex(a => a.id === id);
-      if (idx > -1) assignments[idx] = { id, ...data };
-    } else {
-      assignments.push({ id: nextId.assignments++, ...data });
-    }
-    renderAssignments();
-    updateStats();
-    form.reset();
-    form.hidden = true;
-    document.getElementById('btn-add-assignment')?.setAttribute('aria-expanded', 'false');
-    showToast(id ? 'Assignment updated.' : 'Assignment published.', 'success');
-  });
-
-  window.editAssignment = (id) => {
-    const a = assignments.find(a => a.id === id);
-    if (!a) return;
-    document.getElementById('a-id').value      = a.id;
-    document.getElementById('a-title').value   = a.title;
-    document.getElementById('a-subject').value = a.subject;
-    document.getElementById('a-due').value     = a.dueDate;
-    document.getElementById('a-target').value  = a.targetYear;
-    document.getElementById('assignment-form-title').textContent = 'Edit Assignment';
-    const form = document.getElementById('form-add-assignment');
-    form.hidden = false;
-    document.getElementById('btn-add-assignment')?.setAttribute('aria-expanded', 'true');
-  };
-
-  window.deleteAssignment = (id) => {
-    if (!confirm('Delete this assignment?')) return;
-    assignments = assignments.filter(a => a.id !== id);
-    renderAssignments();
-    updateStats();
-    showToast('Assignment removed.', 'error');
-  };
-
-  document.getElementById('search-assignments')?.addEventListener('input', e => {
-    renderAssignments(e.target.value.toLowerCase().trim());
-  });
-
-  // ── JOBS CRUD ─────────────────────────────────────────────
-  function renderJobs(query = '') {
-    const tbody = document.getElementById('tbody-jobs');
-    if (!tbody) return;
-    const list = query
-      ? jobs.filter(j => `${j.title} ${j.company}`.toLowerCase().includes(query))
-      : jobs;
-
-    if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5"><p class="empty-state">No jobs found.</p></td></tr>`;
-      return;
-    }
-    tbody.innerHTML = list.map(j => `
-      <tr>
-        <td>${j.title}</td>
-        <td>${j.company}</td>
-        <td>${j.package || '—'}</td>
-        <td>${formatDate(j.deadline)}</td>
-        <td>
-          <div class="table-actions">
-            <button class="btn btn--sm btn--outline" onclick="editJob(${j.id})">Edit</button>
-            <button class="btn btn--sm btn--danger"  onclick="deleteJob(${j.id})">Delete</button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  renderJobs();
-
-  document.getElementById('form-add-job')?.addEventListener('submit', e => {
-    e.preventDefault();
-    const form = e.target;
-    const id = parseInt(document.getElementById('j-id').value);
-    const data = {
-      title:    document.getElementById('j-title').value.trim(),
-      company:  document.getElementById('j-company').value.trim(),
-      package:  document.getElementById('j-package').value.trim(),
-      location: document.getElementById('j-location').value.trim(),
-      deadline: document.getElementById('j-deadline').value,
-    };
-    if (id) {
-      const idx = jobs.findIndex(j => j.id === id);
-      if (idx > -1) jobs[idx] = { id, ...data };
-    } else {
-      jobs.push({ id: nextId.jobs++, ...data });
-    }
-    renderJobs();
-    updateStats();
-    form.reset();
-    form.hidden = true;
-    document.getElementById('btn-add-job')?.setAttribute('aria-expanded', 'false');
-    showToast(id ? 'Job listing updated.' : 'Job posted.', 'success');
-  });
-
-  window.editJob = (id) => {
-    const j = jobs.find(j => j.id === id);
-    if (!j) return;
-    document.getElementById('j-id').value      = j.id;
-    document.getElementById('j-title').value   = j.title;
-    document.getElementById('j-company').value = j.company;
-    document.getElementById('j-package').value = j.package;
-    document.getElementById('j-deadline').value = j.deadline;
-    document.getElementById('job-form-title').textContent = 'Edit Job Listing';
-    const form = document.getElementById('form-add-job');
-    form.hidden = false;
-    document.getElementById('btn-add-job')?.setAttribute('aria-expanded', 'true');
-  };
-
-  window.deleteJob = (id) => {
-    if (!confirm('Delete this job listing?')) return;
-    jobs = jobs.filter(j => j.id !== id);
-    renderJobs();
-    updateStats();
-    showToast('Job listing removed.', 'error');
-  };
-
-  document.getElementById('search-jobs')?.addEventListener('input', e => {
-    renderJobs(e.target.value.toLowerCase().trim());
-  });
-
-  // ── NOTICES CRUD ──────────────────────────────────────────
-  function renderNotices(query = '') {
-    const tbody = document.getElementById('tbody-notices');
-    if (!tbody) return;
-    const list = query
-      ? notices.filter(n => n.title.toLowerCase().includes(query))
-      : notices;
-
-    if (list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5"><p class="empty-state">No notices found.</p></td></tr>`;
-      return;
-    }
-    tbody.innerHTML = list.map(n => `
-      <tr>
-        <td>${n.title}</td>
-        <td><span class="badge badge--${n.category}">${capitalise(n.category)}</span></td>
-        <td>${capitalise(n.audience)}</td>
-        <td>${formatDate(n.date)}</td>
-        <td>
-          <div class="table-actions">
-            <button class="btn btn--sm btn--outline" onclick="editNotice(${n.id})">Edit</button>
-            <button class="btn btn--sm btn--danger"  onclick="deleteNotice(${n.id})">Delete</button>
-          </div>
-        </td>
-      </tr>`).join('');
-  }
-  renderNotices();
-
-  document.getElementById('form-add-notice')?.addEventListener('submit', e => {
-    e.preventDefault();
-    const form = e.target;
-    const id = parseInt(document.getElementById('n-id').value);
-    const data = {
-      title:    document.getElementById('n-title').value.trim(),
-      body:     document.getElementById('n-body').value.trim(),
-      category: document.getElementById('n-category').value,
-      audience: document.getElementById('n-audience').value,
-      date:     new Date().toISOString().split('T')[0],
-    };
-    if (id) {
-      const idx = notices.findIndex(n => n.id === id);
-      if (idx > -1) notices[idx] = { id, ...data };
-    } else {
-      notices.push({ id: nextId.notices++, ...data });
-    }
-    renderNotices();
-    updateStats();
-    form.reset();
-    form.hidden = true;
-    document.getElementById('btn-add-notice')?.setAttribute('aria-expanded', 'false');
-    showToast(id ? 'Notice updated.' : 'Notice published.', 'success');
-  });
-
-  window.editNotice = (id) => {
-    const n = notices.find(n => n.id === id);
-    if (!n) return;
-    document.getElementById('n-id').value       = n.id;
-    document.getElementById('n-title').value    = n.title;
-    document.getElementById('n-body').value     = n.body || '';
-    document.getElementById('n-category').value = n.category;
-    document.getElementById('n-audience').value = n.audience;
-    document.getElementById('notice-form-title').textContent = 'Edit Notice';
-    const form = document.getElementById('form-add-notice');
-    form.hidden = false;
-    document.getElementById('btn-add-notice')?.setAttribute('aria-expanded', 'true');
-  };
-
-  window.deleteNotice = (id) => {
-    if (!confirm('Delete this notice?')) return;
-    notices = notices.filter(n => n.id !== id);
-    renderNotices();
-    updateStats();
-    showToast('Notice removed.', 'error');
-  };
-
-  document.getElementById('search-notices')?.addEventListener('input', e => {
-    renderNotices(e.target.value.toLowerCase().trim());
-  });
-
-  // ── Hamburger nav ─────────────────────────────────────────
-  const hamburger = document.getElementById('hamburger');
-  const nav       = document.getElementById('topbar-nav');
-  hamburger?.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    hamburger.setAttribute('aria-expanded', String(open));
-  });
-
-  // ── Helpers ───────────────────────────────────────────────
-  function formatDate(str) {
-    if (!str) return '—';
-    return new Date(str).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  }
-  function capitalise(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; }
-  function getSuffix(n) {
-    const s = ['th','st','nd','rd'];
-    const v = parseInt(n) % 100;
-    return s[(v - 20) % 10] || s[v] || s[0];
-  }
-
-  function showToast(msg, type = 'success') {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.className   = `toast toast--show toast--${type}`;
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => { toast.className = 'toast'; }, 3000);
-  }
-
 });
+
+function _aReady(fn) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fn);
+  } else {
+    fn();
+  }
+}
+
+var _aBooted = false;
+
+// Runs once we know the user is definitely an admin
+function bootAdmin(user) {
+  if (_aBooted) return;
+  _aBooted = true;
+
+  var name    = user.displayName || "Admin";
+  var initial = name.charAt(0).toUpperCase();
+  aSet("admin-name",   name.split(" ")[0]);
+  aSet("admin-avatar", initial);
+
+  // Wire up all the live data listeners
+  aListenNotices();
+  aListenCompanies();
+  aListenAssignments();
+  aListenStudents();
+
+  // Form open/close toggles
+  aSetupToggle("btn-add-student",    "form-add-student");
+  aSetupToggle("btn-add-assignment", "form-add-assignment");
+  aSetupToggle("btn-add-job",        "form-add-job");
+  aSetupToggle("btn-add-notice",     "form-add-notice");
+
+  aBindForms();
+
+  // Live search for each table
+  var searches = [
+    { id: "search-students",    tbody: "tbody-students",    cols: 6 },
+    { id: "search-assignments", tbody: "tbody-assignments", cols: 5 },
+    { id: "search-jobs",        tbody: "tbody-jobs",        cols: 5 },
+    { id: "search-notices",     tbody: "tbody-notices",     cols: 5 }
+  ];
+  searches.forEach(function(s) {
+    var el = document.getElementById(s.id);
+    if (el) {
+      el.addEventListener("input", function() {
+        aFilterTable(s.tbody, this.value.toLowerCase(), s.cols);
+      });
+    }
+  });
+
+  // Sidebar mobile toggle — the menu button in the topbar
+  var menuBtn = document.getElementById("topbar-nav");
+  var sidebar = document.getElementById("a-sidebar");
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle("open");
+    });
+    document.addEventListener("click", function(e) {
+      if (sidebar.classList.contains("open") && !sidebar.contains(e.target)) {
+        sidebar.classList.remove("open");
+      }
+    });
+  }
+
+  // Sidebar nav links — set active state on click
+  document.querySelectorAll(".a-nav-link").forEach(function(link) {
+    link.addEventListener("click", function() {
+      document.querySelectorAll(".a-nav-link").forEach(function(l) { l.classList.remove("active"); });
+      this.classList.add("active");
+      if (sidebar) sidebar.classList.remove("open");
+    });
+  });
+
+  // User avatar dropdown
+  var trigger  = document.getElementById("user-trigger");
+  var dropdown = document.getElementById("user-dropdown");
+  if (trigger && dropdown) {
+    trigger.addEventListener("click", function(e) {
+      e.stopPropagation();
+      var open = dropdown.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", function() {
+      if (dropdown) dropdown.classList.remove("open");
+      if (trigger)  trigger.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  // Sign out — both sidebar button and topbar dropdown button
+  function doSignOut() {
+    _aAuth.signOut().then(function() {
+      sessionStorage.removeItem("cc_role");
+      window.location.replace("index.html");
+    });
+  }
+  var btnSO = document.getElementById("btn-signout");
+  if (btnSO) btnSO.addEventListener("click", doSignOut);
+  var btnSOT = document.getElementById("btn-signout-top");
+  if (btnSOT) btnSOT.addEventListener("click", doSignOut);
+}
+
+// Notices — live updates from Firestore with Edit / Delete
+function aListenNotices() {
+  _aDb.collection("notices").orderBy("createdAt", "desc")
+    .onSnapshot(function(snap) {
+      var tbody = document.getElementById("tbody-notices");
+      if (!tbody) return;
+      aSet("stat-notices", snap.size);
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5"><p class="empty-state">No notices yet.</p></td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(function(doc) {
+        var n  = doc.data();
+        var id = doc.id;
+        return '<tr>' +
+          '<td>' + aEsc(n.title) + '</td>' +
+          '<td><span class="badge badge--' + aEsc(n.category || "general") + '">' + aCap(n.category || "general") + '</span></td>' +
+          '<td>' + aCap(n.audience || "all") + '</td>' +
+          '<td>' + aFmt(n.date) + '</td>' +
+          '<td><div class="table-actions">' +
+            '<button class="btn btn--sm btn--outline" onclick="aEditNotice(\'' + id + '\')">Edit</button>' +
+            '<button class="btn btn--sm btn--danger"  onclick="aDelNotice(\'' + id + '\')">Delete</button>' +
+          '</div></td></tr>';
+      }).join("");
+    }, function(err) { console.error("Notices listener:", err); });
+}
+
+window.aDelNotice = function(id) {
+  if (!confirm("Delete this notice?")) return;
+  _aDb.collection("notices").doc(id).delete()
+    .then(function() { aToast("Notice deleted.", "error"); })
+    .catch(function(e) { aToast("Delete failed: " + e.message, "error"); });
+};
+
+window.aEditNotice = function(id) {
+  _aDb.collection("notices").doc(id).get()
+    .then(function(snap) {
+      if (!snap.exists) return;
+      var n = snap.data();
+      aSv("n-id",       id);
+      aSv("n-title",    n.title    || "");
+      aSv("n-body",     n.content  || "");
+      aSv("n-category", n.category || "general");
+      aSv("n-audience", n.audience || "all");
+      aSet("notice-form-title", "Edit Notice");
+      aShowForm("form-add-notice", "btn-add-notice");
+    })
+    .catch(function(e) { aToast("Load failed: " + e.message, "error"); });
+};
+
+// Companies (job listings) — live updates with Edit / Delete
+function aListenCompanies() {
+  _aDb.collection("companies").orderBy("createdAt", "desc")
+    .onSnapshot(function(snap) {
+      var tbody = document.getElementById("tbody-jobs");
+      if (!tbody) return;
+      aSet("stat-jobs", snap.size);
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5"><p class="empty-state">No companies yet.</p></td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(function(doc) {
+        var c  = doc.data();
+        var id = doc.id;
+        return '<tr>' +
+          '<td>' + aEsc(c.name)            + '</td>' +
+          '<td>' + aEsc(c.profile || "\u2014") + '</td>' +
+          '<td>' + aEsc(c.package || "\u2014") + '</td>' +
+          '<td>' + aFmt(c.deadline)         + '</td>' +
+          '<td><div class="table-actions">' +
+            '<button class="btn btn--sm btn--outline" onclick="aEditCompany(\'' + id + '\')">Edit</button>' +
+            '<button class="btn btn--sm btn--danger"  onclick="aDelCompany(\'' + id + '\')">Delete</button>' +
+          '</div></td></tr>';
+      }).join("");
+    }, function(err) { console.error("Companies listener:", err); });
+}
+
+window.aDelCompany = function(id) {
+  if (!confirm("Delete this company?")) return;
+  _aDb.collection("companies").doc(id).delete()
+    .then(function() { aToast("Company removed.", "error"); })
+    .catch(function(e) { aToast("Delete failed: " + e.message, "error"); });
+};
+
+window.aEditCompany = function(id) {
+  _aDb.collection("companies").doc(id).get()
+    .then(function(snap) {
+      if (!snap.exists) return;
+      var c = snap.data();
+      aSv("j-id",       id);
+      aSv("j-title",    c.name     || "");
+      aSv("j-company",  c.profile  || "");
+      aSv("j-package",  c.package  || "");
+      aSv("j-location", c.location || "");
+      aSv("j-deadline", c.deadline || "");
+      aSet("job-form-title", "Edit Company");
+      aShowForm("form-add-job", "btn-add-job");
+    })
+    .catch(function(e) { aToast("Load failed: " + e.message, "error"); });
+};
+
+// Assignments — live updates with Edit / Delete
+function aListenAssignments() {
+  _aDb.collection("assignments").orderBy("createdAt", "desc")
+    .onSnapshot(function(snap) {
+      var tbody = document.getElementById("tbody-assignments");
+      if (!tbody) return;
+      aSet("stat-assignments", snap.size);
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5"><p class="empty-state">No assignments yet.</p></td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(function(doc) {
+        var a  = doc.data();
+        var id = doc.id;
+        var yr = a.targetYear === "all" ? "All Years" : (a.targetYear || "All") + " Year";
+        return '<tr>' +
+          '<td>' + aEsc(a.title)                           + '</td>' +
+          '<td>' + aEsc(a.subject || a.description || "\u2014") + '</td>' +
+          '<td>' + aFmt(a.deadline || a.dueDate)            + '</td>' +
+          '<td>' + yr                                       + '</td>' +
+          '<td><div class="table-actions">' +
+            '<button class="btn btn--sm btn--outline" onclick="aEditAssignment(\'' + id + '\')">Edit</button>' +
+            '<button class="btn btn--sm btn--danger"  onclick="aDelAssignment(\'' + id + '\')">Delete</button>' +
+          '</div></td></tr>';
+      }).join("");
+    }, function(err) { console.error("Assignments listener:", err); });
+}
+
+window.aDelAssignment = function(id) {
+  if (!confirm("Delete this assignment?")) return;
+  _aDb.collection("assignments").doc(id).delete()
+    .then(function() { aToast("Assignment removed.", "error"); })
+    .catch(function(e) { aToast("Delete failed: " + e.message, "error"); });
+};
+
+window.aEditAssignment = function(id) {
+  _aDb.collection("assignments").doc(id).get()
+    .then(function(snap) {
+      if (!snap.exists) return;
+      var a = snap.data();
+      aSv("a-id",      id);
+      aSv("a-title",   a.title             || "");
+      aSv("a-subject", a.subject           || "");
+      aSv("a-desc",    a.description       || "");
+      aSv("a-due",     a.deadline || a.dueDate || "");
+      aSv("a-target",  a.targetYear        || "all");
+      aSet("assignment-form-title", "Edit Assignment");
+      aShowForm("form-add-assignment", "btn-add-assignment");
+    })
+    .catch(function(e) { aToast("Load failed: " + e.message, "error"); });
+};
+
+// Students — pulls everyone with role "student" from the users collection
+function aListenStudents() {
+  _aDb.collection("users").where("role", "==", "student")
+    .onSnapshot(function(snap) {
+      var tbody = document.getElementById("tbody-students");
+      if (!tbody) return;
+      aSet("stat-students", snap.size);
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="6"><p class="empty-state">No students registered yet.</p></td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(function(doc) {
+        var s  = doc.data();
+        var id = doc.id;
+        return '<tr>' +
+          '<td>' + aEsc(s.rollNumber || "\u2014") + '</td>' +
+          '<td>' + aEsc((s.firstName || "") + " " + (s.lastName || "")) + '</td>' +
+          '<td>' + aEsc(s.email      || "")  + '</td>' +
+          '<td>' + aEsc(s.department || "\u2014") + '</td>' +
+          '<td>' + (s.year ? s.year + aOrd(s.year) + " Year" : "\u2014") + '</td>' +
+          '<td><div class="table-actions">' +
+            '<button class="btn btn--sm btn--danger" onclick="aRemoveStudent(\'' + id + '\')">Remove</button>' +
+          '</div></td></tr>';
+      }).join("");
+    }, function(err) { console.error("Students listener:", err); });
+}
+
+window.aRemoveStudent = function(id) {
+  if (!confirm("Remove this student record? (Does NOT delete their login account.)")) return;
+  _aDb.collection("users").doc(id).update({ role: "removed" })
+    .then(function() { aToast("Student removed.", "error"); })
+    .catch(function(e) { aToast("Remove failed: " + e.message, "error"); });
+};
+
+// All four "add / edit" forms write their data to Firestore
+function aBindForms() {
+
+  var fNotice = document.getElementById("form-add-notice");
+  if (fNotice) {
+    fNotice.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var docId   = aGv("n-id");
+      var payload = {
+        title:    aGv("n-title"),
+        content:  aGv("n-body"),
+        category: aGv("n-category") || "general",
+        audience: aGv("n-audience") || "all",
+        date:     new Date().toISOString().split("T")[0]
+      };
+      if (!payload.title || !payload.content) { aToast("Title and content are required.", "error"); return; }
+      var p = docId
+        ? _aDb.collection("notices").doc(docId).update(payload)
+        : (payload.createdAt = firebase.firestore.FieldValue.serverTimestamp(),
+           _aDb.collection("notices").add(payload));
+      p.then(function() {
+        aToast(docId ? "Notice updated." : "Notice published.", "success");
+        fNotice.reset();
+        aSv("n-id", "");
+        aSet("notice-form-title", "New Announcement");
+        fNotice.hidden = true;
+        var btn = document.getElementById("btn-add-notice");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      }).catch(function(err) { aToast("Save failed: " + err.message, "error"); });
+    });
+  }
+
+  var fJob = document.getElementById("form-add-job");
+  if (fJob) {
+    fJob.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var docId   = aGv("j-id");
+      var payload = {
+        name:     aGv("j-title"),
+        profile:  aGv("j-company"),
+        package:  aGv("j-package"),
+        location: aGv("j-location"),
+        deadline: aGv("j-deadline")
+      };
+      if (!payload.name) { aToast("Company name is required.", "error"); return; }
+      var p = docId
+        ? _aDb.collection("companies").doc(docId).update(payload)
+        : (payload.createdAt = firebase.firestore.FieldValue.serverTimestamp(),
+           _aDb.collection("companies").add(payload));
+      p.then(function() {
+        aToast(docId ? "Company updated." : "Company posted.", "success");
+        fJob.reset();
+        aSv("j-id", "");
+        aSet("job-form-title", "Post New Job");
+        fJob.hidden = true;
+        var btn = document.getElementById("btn-add-job");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      }).catch(function(err) { aToast("Save failed: " + err.message, "error"); });
+    });
+  }
+
+  var fAssign = document.getElementById("form-add-assignment");
+  if (fAssign) {
+    fAssign.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var docId   = aGv("a-id");
+      var payload = {
+        title:       aGv("a-title"),
+        subject:     aGv("a-subject"),
+        description: aGv("a-desc"),
+        deadline:    aGv("a-due"),
+        targetYear:  aGv("a-target") || "all"
+      };
+      if (!payload.title || !payload.deadline) { aToast("Title and deadline are required.", "error"); return; }
+      var p = docId
+        ? _aDb.collection("assignments").doc(docId).update(payload)
+        : (payload.createdAt = firebase.firestore.FieldValue.serverTimestamp(),
+           _aDb.collection("assignments").add(payload));
+      p.then(function() {
+        aToast(docId ? "Assignment updated." : "Assignment published.", "success");
+        fAssign.reset();
+        aSv("a-id", "");
+        aSet("assignment-form-title", "Create Assignment");
+        fAssign.hidden = true;
+        var btn = document.getElementById("btn-add-assignment");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      }).catch(function(err) { aToast("Save failed: " + err.message, "error"); });
+    });
+  }
+
+  var fStudent = document.getElementById("form-add-student");
+  if (fStudent) {
+    fStudent.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var payload = {
+        firstName:  aGv("s-firstname"),
+        lastName:   aGv("s-lastname"),
+        email:      aGv("s-email"),
+        rollNumber: aGv("s-roll"),
+        department: aGv("s-dept"),
+        year:       aGv("s-year"),
+        role:       "student",
+        createdAt:  firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (!payload.firstName || !payload.email) { aToast("Name and email are required.", "error"); return; }
+      var docKey = payload.email.replace(/\./g, "_").replace(/@/g, "__");
+      _aDb.collection("users").doc(docKey).set(payload, { merge: true })
+        .then(function() {
+          aToast("Student added.", "success");
+          fStudent.reset();
+          fStudent.hidden = true;
+          var btn = document.getElementById("btn-add-student");
+          if (btn) btn.setAttribute("aria-expanded", "false");
+        })
+        .catch(function(err) { aToast("Save failed: " + err.message, "error"); });
+    });
+  }
+}
+
+// Toggles a form open and closed when the Add button is clicked
+function aSetupToggle(btnId, formId) {
+  var btn  = document.getElementById(btnId);
+  var form = document.getElementById(formId);
+  if (!btn || !form) return;
+  btn.addEventListener("click", function() {
+    var open = !form.hidden;
+    form.hidden = open;
+    btn.setAttribute("aria-expanded", String(!open));
+    if (!open) form.reset();
+  });
+  form.querySelectorAll("[data-cancel]").forEach(function(c) {
+    c.addEventListener("click", function() {
+      form.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      form.reset();
+    });
+  });
+}
+
+// Filters table rows as the user types in the search box
+function aFilterTable(tbodyId, query, colspan) {
+  var tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  var visible = 0;
+  tbody.querySelectorAll("tr:not(.no-results-row)").forEach(function(row) {
+    var show = !query || row.textContent.toLowerCase().includes(query);
+    row.style.display = show ? "" : "none";
+    if (show) visible++;
+  });
+  var noRow = tbody.querySelector(".no-results-row");
+  if (visible === 0 && query) {
+    if (!noRow) {
+      var tr = document.createElement("tr");
+      tr.className = "no-results-row";
+      tr.innerHTML = '<td colspan="' + colspan + '"><p class="empty-state">No results for "' + aEsc(query) + '".</p></td>';
+      tbody.appendChild(tr);
+    }
+  } else if (noRow) {
+    noRow.remove();
+  }
+}
+
+// Opens a form and scrolls it into view
+function aShowForm(formId, btnId) {
+  var f = document.getElementById(formId);
+  var b = document.getElementById(btnId);
+  if (f) { f.hidden = false; f.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+  if (b) b.setAttribute("aria-expanded", "true");
+}
+
+// Small utility functions used throughout this file
+function aGv(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
+
+function aSv(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.value = (val !== null && val !== undefined) ? val : "";
+}
+
+function aSet(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = String(val !== null && val !== undefined ? val : "");
+}
+
+function aEsc(s) {
+  var str = (s !== null && s !== undefined) ? String(s) : "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function aCap(s)  { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+
+function aFmt(s) {
+  try {
+    return new Date(s).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  } catch(e) {
+    return s || "\u2014";
+  }
+}
+
+function aOrd(n) {
+  var s = ["th", "st", "nd", "rd"];
+  var v = parseInt(n) % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function aToast(msg, type) {
+  type = type || "default";
+  var t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.className   = "toast show" + (type !== "default" ? " " + type : "");
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.className = "toast"; }, 4000);
+}

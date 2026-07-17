@@ -1,263 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Student Dashboard (student.html)-->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Campus Connect — Student Dashboard." />
-  <title>Campus Connect | Student Portal</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/student.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CampusConnect | Student Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/student.css"/>
 </head>
-<body class="dashboard-body">
+<body class="s-body">
+<a class="skip-link" href="#main">Skip to main content</a>
 
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+<!-- ═══════════════════════ TOPBAR ═══════════════════════════ -->
+<header class="s-topbar" role="banner">
+  <a href="index.html" class="s-topbar__brand">
+    <div class="s-brand-mark">CC</div>
+    <span class="s-brand-name">Campus<strong>Connect</strong></span>
+  </a>
 
-  <!--  STICKY TOPBAR -->
-  <header class="site-header" role="banner">
-    <div class="container topbar__inner">
+  <button class="s-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 
-      <a href="index.html" class="brand" aria-label="Campus Connect home">
-        <div class="brand__logo-icon">CC</div>
-        <span class="brand__name">Campus<strong>Connect</strong></span>
-      </a>
+  <nav class="s-topbar__nav" id="topbar-nav" aria-label="Student navigation">
+    <a class="s-nav-link active" href="#notices">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+      Notices
+    </a>
+    <a class="s-nav-link" href="#assignments">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.396 0 2.694.386 3.8 1.053A7.968 7.968 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+      Assignments
+    </a>
+    <a class="s-nav-link" href="#jobs">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/></svg>
+      Jobs
+    </a>
+    <a class="s-nav-link" href="#profile">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+      Profile
+    </a>
+  </nav>
 
-     
-      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false">☰</button>
-
-      <nav class="topbar__nav" id="topbar-nav" role="navigation" aria-label="Student navigation">
-        <ul class="nav-list">
-          <li><a class="nav-link nav-link--active" href="#notices">📋 Notices</a></li>
-          <li><a class="nav-link" href="#assignments">📁 Assignments</a></li>
-          <li><a class="nav-link" href="#jobs">💼 Jobs</a></li>
-          <li><a class="nav-link" href="#profile">👤 Profile</a></li>
-        </ul>
-      </nav>
-
-      <div class="topbar__actions">
-        <!-- Notification bell -->
-        <button class="notif-btn" id="btn-notifications" aria-label="Notifications">
-          🔔
-          <span class="notif-badge" id="notif-count" hidden>0</span>
+  <div class="s-topbar__right">
+    <button class="s-notif-btn" aria-label="Notifications">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+    </button>
+    <div class="s-user-menu" id="user-menu">
+      <button class="s-user-btn" id="user-trigger" type="button" aria-expanded="false">
+        <div class="s-avatar" id="student-avatar">S</div>
+        <span class="s-user-name" id="student-name">Student</span>
+        <svg viewBox="0 0 12 8" fill="none" style="width:12px;height:8px;flex-shrink:0;"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="s-dropdown" id="user-dropdown">
+        <a href="#profile" class="s-dropdown__item">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+          My Profile
+        </a>
+        <div class="s-dropdown__divider"></div>
+        <button type="button" class="s-dropdown__item s-dropdown__signout" id="btn-signout">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+          Sign Out
         </button>
-
-        <!-- User dropdown -->
-        <details class="user-menu" id="user-menu">
-          <summary class="user-menu__trigger">
-            <span class="avatar" id="student-avatar">S</span>
-            <span class="user-menu__name" id="student-name">Student</span>
-          </summary>
-          <ul class="user-menu__dropdown">
-            <li><a href="#profile">My Profile</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="index.html">Sign Out</a></li>
-          </ul>
-        </details>
       </div>
-
     </div>
-  </header>
+  </div>
+</header>
 
-  <!--   MAIN CONTEt-->
-  <main id="main-content" class="dashboard-main" role="main">
-    <div class="container">
+<!-- ═══════════════════════ MAIN ════════════════════════════ -->
+<main id="main" class="s-main" role="main">
+  <div class="s-container">
 
-      <!-- Page heading row -->
-      <div class="page-header">
+    <!-- Hero banner -->
+    <div class="s-hero">
+      <div class="s-hero__left">
+        <p class="s-hero__eyebrow">Welcome back</p>
+        <h1 class="s-hero__title" id="page-greeting">Student Dashboard</h1>
+        <p class="s-hero__sub">Here's what's happening on campus today.</p>
+      </div>
+      <div class="s-hero__right">
+        <span class="s-date-chip" id="current-date"></span>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="s-stats">
+      <div class="s-stat s-stat--blue">
+        <div class="s-stat__ico">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+        </div>
         <div>
-          <h1 class="page-header__title">Student Dashboard</h1>
-          <p class="page-header__subtitle">Good to see you. Here's what's happening on campus.</p>
-        </div>
-        <!-- Quick date display —  -->
-        <span style="font-size:.82rem;color:var(--text-light);white-space:nowrap" id="current-date"></span>
-      </div>
-
-      <!-- Summary stats  -->
-      <div class="stats-bar" role="region" aria-label="Summary">
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-notices">—</span>
-          <span class="stat-card__label">Active Notices</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-pending">—</span>
-          <span class="stat-card__label">Pending Assignments</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-jobs">—</span>
-          <span class="stat-card__label">Open Job Listings</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card__value" id="stat-submitted">—</span>
-          <span class="stat-card__label">Submitted</span>
+          <span class="s-stat__val" id="stat-notices">—</span>
+          <span class="s-stat__lbl">Active Notices</span>
         </div>
       </div>
+      <div class="s-stat s-stat--amber">
+        <div class="s-stat__ico">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <span class="s-stat__val" id="stat-pending">—</span>
+          <span class="s-stat__lbl">Pending Tasks</span>
+        </div>
+      </div>
+      <div class="s-stat s-stat--violet">
+        <div class="s-stat__ico">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/></svg>
+        </div>
+        <div>
+          <span class="s-stat__val" id="stat-jobs">—</span>
+          <span class="s-stat__lbl">Open Listings</span>
+        </div>
+      </div>
+      <div class="s-stat s-stat--green">
+        <div class="s-stat__ico">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <span class="s-stat__val" id="stat-submitted">—</span>
+          <span class="s-stat__lbl">Submitted</span>
+        </div>
+      </div>
+    </div>
 
-      <!-- Main 2-column grid -->
-      <div class="dashboard-grid">
+    <!-- Content grid -->
+    <div class="s-grid">
 
-        <!-- NOTICE BOARD -->
-        <section class="dashboard-section" id="notices" aria-labelledby="h-notices">
-          <header class="section-header">
-            <h2 class="section-header__title" id="h-notices">
-              <span class="section-icon">📋</span>
-              Notice Board
-            </h2>
-            <span class="section-header__count" id="notices-count" aria-live="polite">Loading…</span>
-          </header>
-
-          <!--
-            Notices injected here by student.js  -->
+      <!-- Notice Board -->
+      <section class="s-card" id="notices">
+        <div class="s-card__head">
+          <div class="s-card__head-left">
+            <div class="s-card__ico s-card__ico--blue">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+            </div>
+            <h2 class="s-card__title" id="h-notices">Notice Board</h2>
+          </div>
+          <span class="s-badge-count" id="notices-count" aria-live="polite"></span>
+        </div>
+        <div class="s-card__body">
           <ul class="notice-list" id="notice-list" aria-label="Campus notices"></ul>
-          <p class="empty-state" id="notices-empty" hidden>No notices right now. Check back later.</p>
-        </section>
+          <p class="s-empty" id="notices-empty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            No notices right now.
+          </p>
+        </div>
+      </section>
 
-        <!-- ── ASSIGNMENTS ──────────────────────────────────── -->
-        <section class="dashboard-section" id="assignments" aria-labelledby="h-assignments">
-          <header class="section-header">
-            <h2 class="section-header__title" id="h-assignments">
-              <span class="section-icon">📁</span>
-              Assignments
-            </h2>
-            <span class="section-header__count" id="assignments-count" aria-live="polite">Loading…</span>
-          </header>
-
-          <!-- Filter bar — -->
-          <div class="filter-bar" role="group" aria-label="Filter by status">
-            <button class="filter-btn filter-btn--active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="pending">Pending</button>
-            <button class="filter-btn" data-filter="submitted">Submitted</button>
-            <button class="filter-btn" data-filter="graded">Graded</button>
+      <!-- Assignments -->
+      <section class="s-card" id="assignments">
+        <div class="s-card__head">
+          <div class="s-card__head-left">
+            <div class="s-card__ico s-card__ico--amber">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.396 0 2.694.386 3.8 1.053A7.968 7.968 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+            </div>
+            <h2 class="s-card__title" id="h-assignments">Assignments</h2>
           </div>
-
-          <!--
-            Assignment cards injected by student -->
-          <ul class="assignment-list" id="assignment-list" aria-label="Your assignments"></ul>
-          <p class="empty-state" id="assignments-empty" hidden>No assignments posted yet.</p>
-        </section>
-
-        <!-- ── JOB OPPORTUNITIES ─────────────────────────────── -->
-        <section class="dashboard-section" id="jobs" aria-labelledby="h-jobs">
-          <header class="section-header">
-            <h2 class="section-header__title" id="h-jobs">
-              <span class="section-icon">💼</span>
-              Job Opportunities
-            </h2>
-            <span class="section-header__count" id="jobs-count" aria-live="polite">Loading…</span>
-          </header>
-
-          <!-- Search —  -->
-          <div class="search-bar">
-            <label class="sr-only" for="job-search">Search jobs</label>
-            <input class="form-input search-bar__input" type="search" id="job-search"
-                   placeholder="Search by role, company, skill…" />
+          <span class="s-badge-count" id="assignments-count" aria-live="polite"></span>
+        </div>
+        <div class="s-card__body">
+          <div class="s-filters" role="group" aria-label="Filter">
+            <button class="s-filter active" data-filter="all">All</button>
+            <button class="s-filter" data-filter="pending">Pending</button>
+            <button class="s-filter" data-filter="submitted">Submitted</button>
+            <button class="s-filter" data-filter="graded">Graded</button>
           </div>
+          <ul class="assignment-list" id="assignment-list" aria-label="Assignments"></ul>
+          <p class="s-empty" id="assignments-empty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            No assignments yet.
+          </p>
+        </div>
+      </section>
 
-          <!--
-            Job cards   -->
-          <ul class="job-list" id="job-list" aria-label="Job opportunities"></ul>
-          <p class="empty-state" id="jobs-empty" hidden>No listings available right now.</p>
-        </section>
-
-        <!-- ── STUDENT PROFILE ────────────────────────────────── -->
-       
-        <section class="dashboard-section dashboard-section--profile" id="profile" aria-labelledby="h-profile">
-          <header class="section-header">
-            <h2 class="section-header__title" id="h-profile">
-              <span class="section-icon">👤</span>
-              Student Profile
-            </h2>
-            <button class="btn btn--sm btn--outline" id="btn-edit-profile"
-                    aria-expanded="false" aria-controls="profile-edit-form">
-              Edit Profile
-            </button>
-          </header>
-
-          <!-- Read-only profile display —  -->
-          <div class="profile-card" id="profile-card">
-            <div class="profile-card__avatar-wrap">
-              <span class="profile-card__avatar" id="profile-avatar">S</span>
+      <!-- Job Opportunities -->
+      <section class="s-card" id="jobs">
+        <div class="s-card__head">
+          <div class="s-card__head-left">
+            <div class="s-card__ico s-card__ico--violet">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/></svg>
             </div>
-            <dl class="profile-card__details">
-              <div class="profile-card__row">
-                <dt class="profile-card__label">Full Name</dt>
-                <dd class="profile-card__value" id="profile-name">—</dd>
-              </div>
-              <div class="profile-card__row">
-                <dt class="profile-card__label">Email</dt>
-                <dd class="profile-card__value" id="profile-email">—</dd>
-              </div>
-              <div class="profile-card__row">
-                <dt class="profile-card__label">Roll Number</dt>
-                <dd class="profile-card__value" id="profile-roll">—</dd>
-              </div>
-              <div class="profile-card__row">
-                <dt class="profile-card__label">Department</dt>
-                <dd class="profile-card__value" id="profile-dept">—</dd>
-              </div>
-              <div class="profile-card__row">
-                <dt class="profile-card__label">Year</dt>
-                <dd class="profile-card__value" id="profile-year">—</dd>
-              </div>
-            </dl>
+            <h2 class="s-card__title" id="h-jobs">Job Opportunities</h2>
           </div>
+          <span class="s-badge-count" id="jobs-count" aria-live="polite"></span>
+        </div>
+        <div class="s-card__body">
+          <div class="s-search">
+            <svg class="s-search__ico" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+            <input class="s-search__input" type="search" id="job-search" placeholder="Search role, company, skill…"/>
+          </div>
+          <ul class="job-list" id="job-list" aria-label="Jobs"></ul>
+          <p class="s-empty" id="jobs-empty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            No listings right now.
+          </p>
+        </div>
+      </section>
 
-          <!-- Edit form —  -->
-          <form class="profile-edit-form" id="profile-edit-form"
-                method="post" action="#" hidden novalidate>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="edit-firstname">First name</label>
-                <input class="form-input" type="text" id="edit-firstname" name="firstName"
-                       required autocomplete="given-name" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="edit-lastname">Last name</label>
-                <input class="form-input" type="text" id="edit-lastname" name="lastName"
-                       required autocomplete="family-name" />
-              </div>
+      <!-- Profile -->
+      <section class="s-card" id="profile">
+        <div class="s-card__head">
+          <div class="s-card__head-left">
+            <div class="s-card__ico s-card__ico--green">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="edit-dept">Department</label>
-                <input class="form-input" type="text" id="edit-dept" name="department" />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="edit-year">Year</label>
-                <select class="form-select" id="edit-year" name="year">
-                  <option value="">Select year…</option>
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">4th Year</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="btn btn--primary" type="submit">Save Changes</button>
-              <button class="btn btn--ghost" type="button" id="btn-cancel-edit">Cancel</button>
-            </div>
-          </form>
+            <h2 class="s-card__title" id="h-profile">My Profile</h2>
+          </div>
+          <button class="s-edit-btn" id="btn-edit-profile" aria-expanded="false">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            Edit Profile
+          </button>
+        </div>
 
-        </section>
+        <!-- Profile view -->
+        <div class="s-profile-hero" id="profile-card">
+          <div class="s-profile-ava-wrap">
+            <div class="s-profile-ava" id="profile-avatar">S</div>
+            <div class="s-profile-ava-ring"></div>
+          </div>
+          <div class="s-profile-meta">
+            <h3 class="s-profile-name" id="profile-name">—</h3>
+            <p class="s-profile-email" id="profile-email">—</p>
+          </div>
+        </div>
+        <dl class="s-profile-dl">
+          <div class="s-profile-row">
+            <dt>Roll No.</dt>
+            <dd id="profile-roll">—</dd>
+          </div>
+          <div class="s-profile-row">
+            <dt>Department</dt>
+            <dd id="profile-dept">—</dd>
+          </div>
+          <div class="s-profile-row">
+            <dt>Year</dt>
+            <dd id="profile-year">—</dd>
+          </div>
+        </dl>
 
-      </div>
-      <!-- /dashboard-grid -->
+        <!-- Profile edit form -->
+        <form class="s-profile-form" id="profile-edit-form" novalidate hidden>
+          <div class="s-pf-row">
+            <div class="s-pf-group">
+              <label for="edit-firstname">First name</label>
+              <input type="text" id="edit-firstname" required/>
+            </div>
+            <div class="s-pf-group">
+              <label for="edit-lastname">Last name</label>
+              <input type="text" id="edit-lastname" required/>
+            </div>
+          </div>
+          <div class="s-pf-row">
+            <div class="s-pf-group">
+              <label for="edit-dept">Department</label>
+              <input type="text" id="edit-dept" placeholder="e.g. Computer Science"/>
+            </div>
+            <div class="s-pf-group">
+              <label for="edit-year">Year</label>
+              <select id="edit-year">
+                <option value="">Select…</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+          </div>
+          <div class="s-pf-actions">
+            <button class="s-pf-save" type="submit">Save Changes</button>
+            <button class="s-pf-cancel" type="button" id="btn-cancel-edit">Cancel</button>
+          </div>
+        </form>
+      </section>
 
     </div>
-  </main>
+  </div>
+</main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-      <p class="site-footer__copy">&copy; 2026 Campus Connect — All rights reserved.</p>
-    </div>
-  </footer>
+<footer class="s-footer">
+  <p>&copy; 2026 CampusConnect &mdash; CountryEdu Private Limited</p>
+</footer>
 
-  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
-  <!-- TODO: Replace stub data with real API calls -->
-  <script src="js/student.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/student.js"></script>
 </body>
 </html>
